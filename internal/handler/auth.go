@@ -30,6 +30,23 @@ func (rc AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (rc AuthHandler) RegisterMerchant(w http.ResponseWriter, r *http.Request) {
+	var registerRequest dto.RegisterMerchantRequest
+	if err := json.NewDecoder(r.Body).Decode(&registerRequest); err != nil {
+		logger.Error("Error while decoding register merchant request: " + err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	token, appErr := rc.Service.RegisterMerchant(&registerRequest)
+	if appErr != nil {
+		writeResponse(w, appErr.Code, appErr.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, *token)
+
+}
+
 func writeResponse(w http.ResponseWriter, code int, data interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(code)

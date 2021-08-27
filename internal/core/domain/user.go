@@ -14,6 +14,13 @@ type User struct {
 	CreatedAt string `db:"created_at"`
 }
 
+type UserMerchant struct {
+	User
+	MerchantID        int64  `db:"merchant_id"`
+	MerchantName      string `db:"merchant_name"`
+	HearOfficeAddress string `db:"head_office_address"`
+}
+
 func (r User) ClaimsForAccessToken() AccessTokenClaims {
 	return AccessTokenClaims{
 		UserID: r.UserID,

@@ -54,6 +54,49 @@ func (r AuthRepo) Verify(token string) *errs.AppError {
 	return nil
 }
 
+func (r AuthRepo) CreateUserMerchant(data *domain.UserMerchant) (*domain.UserMerchant, *errs.AppError) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		logger.Error("Error when starting create new user merchant " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	resultUser, err := tx.Exec(`insert into users (role, username, password, created_at) 
+		values (?, ?, ?, ?)`, data.Role, data.Username, data.Password, data.CreatedAt)
+
+	if err != nil {
+		tx.Rollback()
+		logger.Error("Error while create new user: " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	userID, err := resultUser.LastInsertId()
+	if err != nil {
+		logger.Error("Error while getting the last user id: " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	resultMerchant, err := tx.Exec(`insert into merchants (user_id, merchant_name, head_office_address) 
+	values (?, ?, ?)`, userID, data.MerchantName, data.HearOfficeAddress)
+
+	if err != nil {
+		tx.Rollback()
+		logger.Error("Error while create new merchant: " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	merchantID, err := resultMerchant.LastInsertId()
+	if err != nil {
+		logger.Error("Error while getting the last merchant id: " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	data.MerchantID = merchantID
+	data.UserID = userID
+
+	return data, nil
+}
+
 func jwtTokenFromString(tokenString string) (*jwt.Token, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &domain.AccessTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(domain.HMAC_SAMPLE_SECRET), nil

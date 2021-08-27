@@ -9,8 +9,10 @@ import (
 type IAuthRepo interface {
 	FindOne(username string) (*domain.User, *errs.AppError)
 	Verify(token string) *errs.AppError
+	CreateUserMerchant(data *domain.UserMerchant) (*domain.UserMerchant, *errs.AppError)
 }
 
 type IAuthService interface {
 	Login(req dto.LoginRequest) (*dto.LoginResponse, *errs.AppError)
+	RegisterMerchant(req *dto.RegisterMerchantRequest) (*dto.RegisterMerchantResponse, *errs.AppError)
 }
