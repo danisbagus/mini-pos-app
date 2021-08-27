@@ -8,6 +8,7 @@ import (
 
 type IAuthRepo interface {
 	FindOne(username string) (*domain.User, *errs.AppError)
+	Verify(token string) *errs.AppError
 }
 
 type IAuthService interface {

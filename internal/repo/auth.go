@@ -8,6 +8,7 @@ import (
 	"github.com/danisbagus/mini-pos-app/internal/core/port"
 	"github.com/danisbagus/mini-pos-app/pkg/errs"
 	"github.com/danisbagus/mini-pos-app/pkg/logger"
+	"github.com/dgrijalva/jwt-go"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -38,4 +39,28 @@ func (r AuthRepo) FindOne(username string) (*domain.User, *errs.AppError) {
 		}
 	}
 	return &login, nil
+}
+
+func (r AuthRepo) Verify(token string) *errs.AppError {
+	jwtToken, err := jwtTokenFromString(token)
+	if err != nil {
+		return errs.NewAuthorizationError(err.Error())
+	}
+
+	if !jwtToken.Valid {
+		return errs.NewAuthorizationError("Invalid token")
+	}
+	// claims := jwtToken.Claims.(*domain.AccessTokenClaims)
+	return nil
+}
+
+func jwtTokenFromString(tokenString string) (*jwt.Token, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &domain.AccessTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(domain.HMAC_SAMPLE_SECRET), nil
+	})
+	if err != nil {
+		logger.Error("Error while parsing token: " + err.Error())
+		return nil, err
+	}
+	return token, nil
 }

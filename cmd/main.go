@@ -7,6 +7,7 @@ import (
 
 	"github.com/danisbagus/mini-pos-app/internal/core/service"
 	"github.com/danisbagus/mini-pos-app/internal/handler"
+	"github.com/danisbagus/mini-pos-app/internal/middleware"
 	"github.com/danisbagus/mini-pos-app/internal/repo"
 
 	"net/http"
@@ -37,7 +38,14 @@ func main() {
 	authHandler := handler.AuthHandler{Service: authService}
 
 	// routing
-	router.HandleFunc("/auth/login", authHandler.Login).Methods(http.MethodPost)
+	authRouter := router.PathPrefix("/auth").Subrouter()
+	apiRouter := router.PathPrefix("/api").Subrouter()
+
+	authRouter.HandleFunc("/login", authHandler.Login).Methods(http.MethodPost)
+
+	// middleware
+	authMiddleware := middleware.AuthMiddleware{Repo: repo.NewAuthRepo(client)}
+	apiRouter.Use(authMiddleware.AuthorizationHandler())
 
 	// starting server
 	appPort := fmt.Sprintf("%v:%v", os.Getenv("APP_HOST"), os.Getenv("APP_PORT"))
