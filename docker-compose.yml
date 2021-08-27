@@ -1,0 +1,31 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:5.6.27
+    ports:
+      - "127.0.0.1:7010:3306"
+    volumes:
+      - mysqldataminipos:/var/lib/mysql
+      - ./resource/docker/initdb:/docker-entrypoint-initdb.d  
+    container_name: mysql-minipos
+    environment:
+      MYSQL_ROOT_PASSWORD: mypass
+      TZ: Asia/Jakarta
+    networks:
+      - minipos-net
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 7011:8080
+    networks:
+      - minipos-net
+
+volumes:
+  mysqldataminipos:
+    driver: local
+
+networks:
+  minipos-net:
+    driver: bridge
