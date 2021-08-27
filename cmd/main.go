@@ -43,6 +43,7 @@ func main() {
 
 	authRouter.HandleFunc("/login", authHandler.Login).Methods(http.MethodPost)
 	authRouter.HandleFunc("/register/merchant", authHandler.RegisterMerchant).Methods(http.MethodPost)
+	authRouter.HandleFunc("/register/customer", authHandler.RegisterCustomer).Methods(http.MethodPost)
 
 	// middleware
 	authMiddleware := middleware.AuthMiddleware{Repo: repo.NewAuthRepo(client)}

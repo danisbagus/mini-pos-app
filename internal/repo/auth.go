@@ -76,7 +76,7 @@ func (r AuthRepo) CreateUserMerchant(data *domain.UserMerchant) (*domain.UserMer
 		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 
-	resultMerchant, err := tx.Exec(`insert into merchants (user_id, merchant_name, head_office_address) 
+	resultCustomer, err := tx.Exec(`insert into customers (user_id, customer_name, phone) 
 	values (?, ?, ?)`, userID, data.MerchantName, data.HearOfficeAddress)
 
 	if err != nil {
@@ -85,13 +85,72 @@ func (r AuthRepo) CreateUserMerchant(data *domain.UserMerchant) (*domain.UserMer
 		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 
-	merchantID, err := resultMerchant.LastInsertId()
+	merchantID, err := resultCustomer.LastInsertId()
 	if err != nil {
 		logger.Error("Error while getting the last merchant id: " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 
+	// commit the transaction
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		logger.Error("Error while commiting transaction: " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
 	data.MerchantID = merchantID
+	data.UserID = userID
+
+	return data, nil
+}
+
+func (r AuthRepo) CreateUserCustomer(data *domain.UserCustomer) (*domain.UserCustomer, *errs.AppError) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		logger.Error("Error when starting create new user customer " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	resultUser, err := tx.Exec(`insert into users (role, username, password, created_at) 
+		values (?, ?, ?, ?)`, data.Role, data.Username, data.Password, data.CreatedAt)
+
+	if err != nil {
+		tx.Rollback()
+		logger.Error("Error while create new user: " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	userID, err := resultUser.LastInsertId()
+	if err != nil {
+		logger.Error("Error while getting the last user id: " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	resultCustomer, err := tx.Exec(`insert into customers (user_id, customer_name, phone) 
+	values (?, ?, ?)`, userID, data.CustomerName, data.Phone)
+
+	if err != nil {
+		tx.Rollback()
+		logger.Error("Error while create new customer: " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	customerID, err := resultCustomer.LastInsertId()
+	if err != nil {
+		logger.Error("Error while getting the last customer id: " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	// commit the transaction
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		logger.Error("Error while commiting transaction: " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	data.CustomerID = customerID
 	data.UserID = userID
 
 	return data, nil

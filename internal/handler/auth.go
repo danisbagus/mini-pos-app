@@ -47,6 +47,23 @@ func (rc AuthHandler) RegisterMerchant(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (rc AuthHandler) RegisterCustomer(w http.ResponseWriter, r *http.Request) {
+	var registerRequest dto.RegisterCustomerRequest
+	if err := json.NewDecoder(r.Body).Decode(&registerRequest); err != nil {
+		logger.Error("Error while decoding register customer request: " + err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	token, appErr := rc.Service.RegisterCustomer(&registerRequest)
+	if appErr != nil {
+		writeResponse(w, appErr.Code, appErr.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, *token)
+
+}
+
 func writeResponse(w http.ResponseWriter, code int, data interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(code)

@@ -79,6 +79,29 @@ func (r AuthService) RegisterMerchant(req *dto.RegisterMerchantRequest) (*dto.Re
 
 }
 
+func (r AuthService) RegisterCustomer(req *dto.RegisterCustomerRequest) (*dto.RegisterCustomerResponse, *errs.AppError) {
+	err := req.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	hashPassword, _ := HashPassword(req.Password)
+
+	form := domain.UserCustomer{
+		User:         domain.User{Role: "CUSTOMER", Username: req.Username, Password: hashPassword, CreatedAt: time.Now().Format(dbTSLayout)},
+		CustomerName: req.CustomerName,
+		Phone:        req.Phone,
+	}
+
+	newData, err := r.repo.CreateUserCustomer(&form)
+	if err != nil {
+		return nil, err
+	}
+	response := dto.NewRegisterUserCustomerResponse(newData)
+
+	return response, nil
+}
+
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err

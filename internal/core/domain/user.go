@@ -21,6 +21,13 @@ type UserMerchant struct {
 	HearOfficeAddress string `db:"head_office_address"`
 }
 
+type UserCustomer struct {
+	User
+	CustomerID   int64  `db:"customer_id"`
+	CustomerName string `db:"customer_name"`
+	Phone        string `db:"phone"`
+}
+
 func (r User) ClaimsForAccessToken() AccessTokenClaims {
 	return AccessTokenClaims{
 		UserID: r.UserID,

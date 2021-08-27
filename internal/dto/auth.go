@@ -18,6 +18,13 @@ type RegisterMerchantRequest struct {
 	HearOfficeAddress string `json:"head_office_address"`
 }
 
+type RegisterCustomerRequest struct {
+	Username     string `json:"username"`
+	Password     string `json:"password"`
+	CustomerName string `json:"customer_name"`
+	Phone        string `json:"phone"`
+}
+
 type LoginResponse struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token,omitempty"`
@@ -29,6 +36,14 @@ type RegisterMerchantResponse struct {
 	MerchantID        int64  `json:"merchant_id"`
 	MerchantName      string `json:"merchant_name"`
 	HearOfficeAddress string `json:"head_office_address"`
+}
+
+type RegisterCustomerResponse struct {
+	UserID       int64  `json:"user_id"`
+	Username     string `json:"username"`
+	CustomerID   int64  `json:"customer_id"`
+	CustomerName string `json:"customer_name"`
+	Phone        string `json:"phone"`
 }
 
 func (r LoginRequest) Validate() *errs.AppError {
@@ -58,6 +73,18 @@ func NewRegisterUserMerchantResponse(data *domain.UserMerchant) *RegisterMerchan
 	return &result
 }
 
+func NewRegisterUserCustomerResponse(data *domain.UserCustomer) *RegisterCustomerResponse {
+	result := RegisterCustomerResponse{
+		UserID:       data.UserID,
+		Username:     data.Username,
+		CustomerID:   data.CustomerID,
+		CustomerName: data.CustomerName,
+		Phone:        data.Phone,
+	}
+
+	return &result
+}
+
 func (r RegisterMerchantRequest) Validate() *errs.AppError {
 
 	if err := validation.Validate(r.Username, validation.Required); err != nil {
@@ -77,6 +104,31 @@ func (r RegisterMerchantRequest) Validate() *errs.AppError {
 
 	if err := validation.Validate(r.HearOfficeAddress, validation.Required); err != nil {
 		return errs.NewBadRequestError("HearOfficeAddress is required")
+
+	}
+
+	return nil
+}
+
+func (r RegisterCustomerRequest) Validate() *errs.AppError {
+
+	if err := validation.Validate(r.Username, validation.Required); err != nil {
+		return errs.NewBadRequestError("Username is required")
+
+	}
+
+	if err := validation.Validate(r.Password, validation.Required); err != nil {
+		return errs.NewBadRequestError("Password is required")
+
+	}
+
+	if err := validation.Validate(r.CustomerName, validation.Required); err != nil {
+		return errs.NewBadRequestError("CustomerName is required")
+
+	}
+
+	if err := validation.Validate(r.Phone, validation.Required); err != nil {
+		return errs.NewBadRequestError("Phone is required")
 
 	}
 
