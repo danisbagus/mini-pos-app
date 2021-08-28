@@ -107,5 +107,23 @@ func (r ProductRepo) Update(SKUID string, data *domain.Product) *errs.AppError {
 	}
 
 	return nil
+}
+
+func (r ProductRepo) UpdatePrice(SKUID string, outliteID int64, price int64) *errs.AppError {
+	updateSql := "update prices set price=? where sku_id=? and outlet_id=?"
+
+	stmt, err := r.db.Prepare(updateSql)
+	if err != nil {
+		logger.Error("Error while update product price " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	_, err = stmt.Exec(price, SKUID, outliteID)
+	if err != nil {
+		logger.Error("Error while update product proce" + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	return nil
 
 }

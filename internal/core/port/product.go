@@ -10,10 +10,12 @@ type IProductRepo interface {
 	Create(data *domain.ProductPrice, outlets []domain.Outlet) *errs.AppError
 	FindOne(SKUID string) (*domain.Product, *errs.AppError)
 	Update(SKUID string, data *domain.Product) *errs.AppError
+	UpdatePrice(SKUID string, outliteID int64, price int64) *errs.AppError
 }
 
 type IProducService interface {
 	NewProduct(data *dto.NewProductRequest) (*dto.NewProductResponse, *errs.AppError)
 	GetDetail(SKUID string) (*dto.ProductResponse, *errs.AppError)
 	UpdateProduct(SKUID string, data *dto.UpdateProductRequest) (*dto.UpdateProductResponse, *errs.AppError)
+	UpdateProductPrice(SKUID string, data *dto.UpdateProductPriceRequest) *errs.AppError
 }

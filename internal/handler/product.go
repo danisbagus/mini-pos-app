@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"path/filepath"
@@ -134,4 +135,25 @@ func (rc ProductHandler) GetProductDetail(w http.ResponseWriter, r *http.Request
 		return
 	}
 	writeResponse(w, http.StatusOK, data)
+}
+
+func (rc ProductHandler) UpdateProductPrice(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	SKUID := vars["sku_id"]
+
+	var request dto.UpdateProductPriceRequest
+
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		writeResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err := rc.Service.UpdateProductPrice(SKUID, &request)
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, map[string]bool{
+		"success": true,
+	})
 }

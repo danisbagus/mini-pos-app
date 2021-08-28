@@ -147,6 +147,25 @@ func (r ProductService) UpdateProduct(SKUID string, req *dto.UpdateProductReques
 	return response, nil
 }
 
+func (r ProductService) UpdateProductPrice(SKUID string, req *dto.UpdateProductPriceRequest) *errs.AppError {
+	err := req.Validate()
+	if err != nil {
+		return err
+	}
+
+	// validate product
+	if _, err = r.GetDetail(SKUID); err != nil {
+		return err
+	}
+
+	err = r.repo.UpdatePrice(SKUID, req.OutletID, req.Price)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 var seededRand *rand.Rand = rand.New(
 	rand.NewSource(time.Now().UnixNano()))
 

@@ -44,8 +44,13 @@ type UpdateProductResponse struct {
 	Quantity    int64  `json:"quantity"`
 }
 
+type UpdateProductPriceRequest struct {
+	OutletID int64 `json:"outlet_id"`
+	Price    int64 `json:"price"`
+}
+
 type ProductPrice struct {
-	OutletID int64 `json:"oulet_id"`
+	OutletID int64 `json:"outlet_id"`
 	Price    int64 `json:"price"`
 }
 
@@ -143,6 +148,25 @@ func (r UpdateProductRequest) Validate() *errs.AppError {
 
 	if r.Quantity <= 0 {
 		return errs.NewValidationError("Product quantity must more than 0")
+	}
+
+	return nil
+}
+
+func (r UpdateProductPriceRequest) Validate() *errs.AppError {
+
+	if err := validation.Validate(r.OutletID, validation.Required); err != nil {
+		return errs.NewBadRequestError("Outlite ID is required")
+
+	}
+
+	if err := validation.Validate(r.Price, validation.Required); err != nil {
+		return errs.NewBadRequestError("Price ID is required")
+
+	}
+
+	if r.Price <= 0 {
+		return errs.NewValidationError("Price must more than 0")
 	}
 
 	return nil
