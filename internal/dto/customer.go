@@ -57,6 +57,16 @@ func NewGetDetailUserCustomerResponse(data *domain.UserCustomer) *UserCustomerRe
 	return result
 }
 
+func NewGetDetailCustomerResponse(data *domain.Customer) *CustomerResponse {
+	result := &CustomerResponse{
+		UserID:       data.UserID,
+		CustomerID:   data.CustomerID,
+		CustomerName: data.CustomerName,
+		Phone:        data.Phone,
+	}
+	return result
+}
+
 func (r UpdateCustomerRequest) Validate() *errs.AppError {
 	if err := validation.Validate(r.CustomerName, validation.Required); err != nil {
 		return errs.NewBadRequestError("CustomerName is required")

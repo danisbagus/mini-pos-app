@@ -28,6 +28,18 @@ func (r CustomerService) GetAll() (*dto.CustomerListResponse, *errs.AppError) {
 	return response, nil
 }
 
+func (r CustomerService) GetOne(customerID int64) (*dto.CustomerResponse, *errs.AppError) {
+
+	data, err := r.repo.FindOne(customerID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.NewGetDetailCustomerResponse(data)
+
+	return response, nil
+}
+
 func (r CustomerService) GetDetailByUserID(userID int64) (*dto.UserCustomerResponse, *errs.AppError) {
 	data, err := r.repo.FindOneByUserID(userID)
 	if err != nil {

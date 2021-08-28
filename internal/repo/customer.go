@@ -34,6 +34,27 @@ func (r CustomerRepo) FindAll() ([]domain.Customer, *errs.AppError) {
 	return customers, nil
 }
 
+func (r CustomerRepo) FindOne(customerID int64) (*domain.Customer, *errs.AppError) {
+	var data domain.Customer
+
+	findOneByIDSql := `
+	select c.* from 
+	customers c where c.customer_id = ?`
+
+	err := r.db.Get(&data, findOneByIDSql, customerID)
+
+	if err != nil {
+		logger.Error("Error while get find one mechant by customer id " + err.Error())
+		if err == sql.ErrNoRows {
+			return nil, errs.NewNotFoundError("customer not found")
+		} else {
+			return nil, errs.NewUnexpectedError("Unexpected database error")
+		}
+	}
+
+	return &data, nil
+}
+
 func (r CustomerRepo) FindOneByUserID(userID int64) (*domain.UserCustomer, *errs.AppError) {
 	var data domain.UserCustomer
 
