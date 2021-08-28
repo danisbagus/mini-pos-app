@@ -70,6 +70,59 @@ func (rc ProductHandler) NewProduct(w http.ResponseWriter, r *http.Request) {
 	writeResponse(w, http.StatusCreated, data)
 }
 
+func (rc ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
+	claimData, appErr := GetClaimData(r)
+	if appErr != nil {
+		writeResponse(w, appErr.Code, appErr.AsMessage())
+		return
+	}
+
+	if claimData.Role != "MERCHANT" {
+		err := errs.NewAuthorizationError(fmt.Sprintf("%s role is not authorized", claimData.Role))
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+
+	}
+
+	err := r.ParseMultipartForm(32 << 20)
+	if err != nil {
+		writeResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	file, handler, err := r.FormFile("file")
+	if err != nil {
+		writeResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	fileLocation := fmt.Sprintf("public/uploads/%v%v", time.Now().UnixNano(), filepath.Ext(handler.Filename))
+
+	quantity, err := strconv.Atoi(r.FormValue("quantity"))
+	if err != nil {
+		writeResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	vars := mux.Vars(r)
+	SKUID := vars["sku_id"]
+
+	request := dto.UpdateProductRequest{
+		UserID:      claimData.UserID,
+		ProductName: r.FormValue("product_name"),
+		Quantity:    int64(quantity),
+		Image:       fileLocation,
+		File:        file,
+	}
+
+	data, appErr := rc.Service.UpdateProduct(SKUID, &request)
+	if appErr != nil {
+		writeResponse(w, appErr.Code, appErr.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, data)
+}
+
 func (rc ProductHandler) GetProductDetail(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)

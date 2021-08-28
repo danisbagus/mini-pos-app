@@ -90,3 +90,22 @@ func (r ProductRepo) FindOne(SKUID string) (*domain.Product, *errs.AppError) {
 
 	return &data, nil
 }
+
+func (r ProductRepo) Update(SKUID string, data *domain.Product) *errs.AppError {
+	updateSql := "update products set product_name=?, image=?, quantity=? where sku_id=?"
+
+	stmt, err := r.db.Prepare(updateSql)
+	if err != nil {
+		logger.Error("Error while update product " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	_, err = stmt.Exec(data.ProductName, data.Image, data.Quantity, SKUID)
+	if err != nil {
+		logger.Error("Error while update product " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	return nil
+
+}

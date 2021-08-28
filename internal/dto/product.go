@@ -27,6 +27,23 @@ type NewProductResponse struct {
 	Price       int64  `json:"price"`
 }
 
+type UpdateProductRequest struct {
+	ProductName string `json:"-"`
+	UserID      int64  `json:"-"`
+	MerchantID  int64  `json:"-"`
+	Image       string `json:"-"`
+	Quantity    int64  `json:"-"`
+	File        multipart.File
+}
+
+type UpdateProductResponse struct {
+	SKUID       string `json:"sku_id"`
+	MerchantID  int64  `json:"merchant_id"`
+	ProductName string `json:"product_name"`
+	Image       string `json:"image"`
+	Quantity    int64  `json:"quantity"`
+}
+
 type ProductPrice struct {
 	OutletID int64 `json:"oulet_id"`
 	Price    int64 `json:"price"`
@@ -50,6 +67,18 @@ func NewNewProductResponse(data *domain.ProductPrice) *NewProductResponse {
 		Quantity:    data.Quantity,
 		Price:       data.Price,
 	}
+	return result
+}
+
+func NewUpdateProductResponse(data *domain.Product) *UpdateProductResponse {
+	result := &UpdateProductResponse{
+		SKUID:       data.SKUID,
+		MerchantID:  data.MerchantID,
+		ProductName: data.ProductName,
+		Image:       data.Image,
+		Quantity:    data.Quantity,
+	}
+
 	return result
 }
 
@@ -97,5 +126,24 @@ func (r NewProductRequest) Validate() *errs.AppError {
 	if r.Price <= 0 {
 		return errs.NewValidationError("Product price must more than 0")
 	}
+	return nil
+}
+
+func (r UpdateProductRequest) Validate() *errs.AppError {
+
+	if err := validation.Validate(r.ProductName, validation.Required); err != nil {
+		return errs.NewBadRequestError("Product name is required")
+
+	}
+
+	if err := validation.Validate(r.Quantity, validation.Required); err != nil {
+		return errs.NewBadRequestError("Product quantity is required")
+
+	}
+
+	if r.Quantity <= 0 {
+		return errs.NewValidationError("Product quantity must more than 0")
+	}
+
 	return nil
 }
