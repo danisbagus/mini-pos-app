@@ -11,6 +11,7 @@ type IProductRepo interface {
 	FindOne(SKUID string) (*domain.Product, *errs.AppError)
 	Update(SKUID string, data *domain.Product) *errs.AppError
 	UpdatePrice(SKUID string, outliteID int64, price int64) *errs.AppError
+	Delete(SKUID string) *errs.AppError
 }
 
 type IProducService interface {
@@ -18,4 +19,5 @@ type IProducService interface {
 	GetDetail(SKUID string) (*dto.ProductResponse, *errs.AppError)
 	UpdateProduct(SKUID string, data *dto.UpdateProductRequest) (*dto.UpdateProductResponse, *errs.AppError)
 	UpdateProductPrice(SKUID string, data *dto.UpdateProductPriceRequest) *errs.AppError
+	RemoveProduct(SKUID string, userID int64) *errs.AppError
 }

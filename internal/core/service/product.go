@@ -166,6 +166,29 @@ func (r ProductService) UpdateProductPrice(SKUID string, req *dto.UpdateProductP
 	return nil
 }
 
+func (r ProductService) RemoveProduct(SKUID string, userID int64) *errs.AppError {
+	// get merchant data
+	merchant, err := r.merchantRepo.FindOneByUserID(userID)
+	if err != nil {
+		return err
+	}
+
+	// validate product
+	product, err := r.GetDetail(SKUID)
+	if err != nil {
+		return err
+	}
+	if product.MerchantID != merchant.MerchantID {
+		return errs.NewBadRequestError("Cannot delete product of another merchant")
+	}
+
+	err = r.repo.Delete(SKUID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 var seededRand *rand.Rand = rand.New(
 	rand.NewSource(time.Now().UnixNano()))
 

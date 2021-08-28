@@ -71,6 +71,7 @@ func main() {
 	apiRouter.HandleFunc("/product/{sku_id}", productHandler.GetProductDetail).Methods(http.MethodGet)
 	apiRouter.HandleFunc("/product/{sku_id}", productHandler.UpdateProduct).Methods(http.MethodPatch)
 	apiRouter.HandleFunc("/product/{sku_id}/price", productHandler.UpdateProductPrice).Methods(http.MethodPatch)
+	apiRouter.HandleFunc("/product/{sku_id}", productHandler.RemoveProduct).Methods(http.MethodDelete)
 
 	apiRouter.HandleFunc("/outlet/merchant/{merchant_id}", outletHandler.GetOutletListByMerchantID).Methods(http.MethodGet)
 

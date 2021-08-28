@@ -157,3 +157,29 @@ func (rc ProductHandler) UpdateProductPrice(w http.ResponseWriter, r *http.Reque
 		"success": true,
 	})
 }
+
+func (rc ProductHandler) RemoveProduct(w http.ResponseWriter, r *http.Request) {
+	claimData, appErr := GetClaimData(r)
+	if appErr != nil {
+		writeResponse(w, appErr.Code, appErr.AsMessage())
+		return
+	}
+
+	if claimData.Role != "MERCHANT" {
+		err := errs.NewAuthorizationError(fmt.Sprintf("%s role is not authorized", claimData.Role))
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+
+	}
+	vars := mux.Vars(r)
+	SKUID := vars["sku_id"]
+
+	err := rc.Service.RemoveProduct(SKUID, claimData.UserID)
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, map[string]bool{
+		"success": true,
+	})
+}

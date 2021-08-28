@@ -127,3 +127,21 @@ func (r ProductRepo) UpdatePrice(SKUID string, outliteID int64, price int64) *er
 	return nil
 
 }
+
+func (r ProductRepo) Delete(SKUID string) *errs.AppError {
+
+	deleteSql := "delete from products where sku_id = ?"
+
+	stmt, err := r.db.Prepare(deleteSql)
+	if err != nil {
+		logger.Error("Error while delete product " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	_, err = stmt.Exec(SKUID)
+	if err != nil {
+		logger.Error("Error while delete product " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+	return nil
+}
