@@ -8,6 +8,7 @@ import (
 
 type ICustomerRepo interface {
 	FindAll() ([]domain.Customer, *errs.AppError)
+	// FindOne() (*domain.Customer, *errs.AppError)
 	FindOneByUserID(userID int64) (*domain.UserCustomer, *errs.AppError)
 	Update(customerID int64, data *domain.Customer) *errs.AppError
 }

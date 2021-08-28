@@ -57,6 +57,16 @@ func NewGetListMerchantResponse(data []domain.Merchant) *MerchantListResponse {
 	return &MerchantListResponse{Merchant: dataList}
 }
 
+func NewGetDetailMerchantResponse(data *domain.UserMerchant) *MerchantResponse {
+	result := &MerchantResponse{
+		MerchantID:        data.MerchantID,
+		UserID:            data.UserID,
+		MerchantName:      data.MerchantName,
+		HearOfficeAddress: data.HearOfficeAddress,
+	}
+	return result
+}
+
 func (r UpdateMerchanteRequest) Validate() *errs.AppError {
 	if err := validation.Validate(r.MerchantName, validation.Required); err != nil {
 		return errs.NewBadRequestError("MerchantName is required")

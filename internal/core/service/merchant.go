@@ -28,6 +28,18 @@ func (r MerchantService) GetAll() (*dto.MerchantListResponse, *errs.AppError) {
 	return response, nil
 }
 
+func (r MerchantService) GetOne(merchantID int64) (*dto.MerchantResponse, *errs.AppError) {
+
+	data, err := r.repo.FindOneByID(merchantID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.NewGetDetailMerchantResponse(data)
+
+	return response, nil
+}
+
 func (r MerchantService) GetDetailByUserID(userID int64) (*dto.UserMerchantResponse, *errs.AppError) {
 
 	data, err := r.repo.FindOneByUserID(userID)
