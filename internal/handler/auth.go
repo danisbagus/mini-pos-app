@@ -3,10 +3,14 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
+	"github.com/danisbagus/mini-pos-app/internal/core/domain"
 	"github.com/danisbagus/mini-pos-app/internal/core/port"
 	"github.com/danisbagus/mini-pos-app/internal/dto"
+	"github.com/danisbagus/mini-pos-app/pkg/errs"
 	"github.com/danisbagus/mini-pos-app/pkg/logger"
+	"github.com/dgrijalva/jwt-go"
 )
 
 type AuthHandler struct {
@@ -70,4 +74,32 @@ func writeResponse(w http.ResponseWriter, code int, data interface{}) {
 	if err := json.NewEncoder(w).Encode(data); err != nil {
 		panic(err)
 	}
+}
+
+func GetClaimData(r *http.Request) (*domain.AccessTokenClaims, *errs.AppError) {
+	authHeader := r.Header.Get("Authorization")
+	splitToken := strings.Split(authHeader, "Bearer")
+	var token string
+
+	if len(splitToken) == 2 {
+		token = strings.TrimSpace(splitToken[1])
+	} else {
+		logger.Error("Error while split token")
+		return nil, errs.NewAuthorizationError("Invalid token")
+	}
+
+	jwtToken, err := jwt.ParseWithClaims(token, &domain.AccessTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(domain.HMAC_SAMPLE_SECRET), nil
+	})
+	if err != nil {
+		logger.Error("Error while parsing token: " + err.Error())
+		return nil, errs.NewAuthorizationError(err.Error())
+	}
+
+	if !jwtToken.Valid {
+		return nil, errs.NewAuthorizationError("Invalid token")
+	}
+
+	claims := jwtToken.Claims.(*domain.AccessTokenClaims)
+	return claims, nil
 }
