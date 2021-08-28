@@ -47,6 +47,7 @@ type UpdateProductResponse struct {
 type UpdateProductPriceRequest struct {
 	OutletID int64 `json:"outlet_id"`
 	Price    int64 `json:"price"`
+	UserID   int64 `json:"-"`
 }
 
 type ProductPrice struct {

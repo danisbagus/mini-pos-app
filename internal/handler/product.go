@@ -138,6 +138,18 @@ func (rc ProductHandler) GetProductDetail(w http.ResponseWriter, r *http.Request
 }
 
 func (rc ProductHandler) UpdateProductPrice(w http.ResponseWriter, r *http.Request) {
+	claimData, appErr := GetClaimData(r)
+	if appErr != nil {
+		writeResponse(w, appErr.Code, appErr.AsMessage())
+		return
+	}
+
+	if claimData.Role != "MERCHANT" {
+		err := errs.NewAuthorizationError(fmt.Sprintf("%s role is not authorized", claimData.Role))
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+
+	}
 	vars := mux.Vars(r)
 	SKUID := vars["sku_id"]
 
@@ -147,6 +159,8 @@ func (rc ProductHandler) UpdateProductPrice(w http.ResponseWriter, r *http.Reque
 		writeResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	request.UserID = claimData.UserID
 
 	err := rc.Service.UpdateProductPrice(SKUID, &request)
 	if err != nil {
