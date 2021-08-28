@@ -87,6 +87,7 @@ CREATE TABLE `sale_transactions` (
   `sku_id` varchar(10)  NOT NULL,
   `outlet_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
+  `total_price` int(11) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`transaction_id`),
   FOREIGN KEY (`customer_id`) REFERENCES customers(`customer_id`) ON DELETE CASCADE,
@@ -175,9 +176,9 @@ UNLOCK TABLES;
 LOCK TABLES `sale_transactions` WRITE;
 
 INSERT INTO `sale_transactions` VALUES 
-  ('PTK8R6O',1,'PGK8R6O',1, 20, '2020-08-09 10:27:22'),
-  ('PTK8RPO',2,'PSK8RPO',2, 20,'2020-08-09 10:27:22'),
-  ('PTK8R0O',1,'PLK8R0O',3, 20,  '2020-08-09 10:27:22'),
-  ('PTK8OPO',2,'PMK8OPO',4, 10, '2020-08-09 10:27:22');
+  ('PTK8R6O',1,'PGK8R6O',1, 20, 100000,'2020-08-09 10:27:22'),
+  ('PTK8RPO',2,'PSK8RPO',2, 20, 200000,'2020-08-09 10:27:22'),
+  ('PTK8R0O',1,'PLK8R0O',3, 20, 300000,'2020-08-09 10:27:22'),
+  ('PTK8OPO',2,'PMK8OPO',4, 10, 400000,'2020-08-09 10:27:22');
 
 UNLOCK TABLES;
