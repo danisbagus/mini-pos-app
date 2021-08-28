@@ -46,6 +46,7 @@ func (rc ProductHandler) NewProduct(w http.ResponseWriter, r *http.Request) {
 	fileLocation := fmt.Sprintf("public/uploads/%v%v", time.Now().UnixNano(), filepath.Ext(handler.Filename))
 
 	quantity, err := strconv.Atoi(r.FormValue("quantity"))
+	price, err := strconv.Atoi(r.FormValue("price"))
 	if err != nil {
 		writeResponse(w, http.StatusBadRequest, err.Error())
 		return
@@ -56,6 +57,7 @@ func (rc ProductHandler) NewProduct(w http.ResponseWriter, r *http.Request) {
 		ProductName: r.FormValue("product_name"),
 		Quantity:    int64(quantity),
 		Image:       fileLocation,
+		Price:       int64(price),
 		File:        file,
 	}
 

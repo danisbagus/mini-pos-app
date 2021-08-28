@@ -19,12 +19,14 @@ const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 type ProductService struct {
 	repo         port.IProductRepo
 	merchantRepo port.IMerchantRepo
+	outletRepo   port.IOutletRepo
 }
 
-func NewProductService(repo port.IProductRepo, merchantRepo port.IMerchantRepo) port.IProducService {
+func NewProductService(repo port.IProductRepo, merchantRepo port.IMerchantRepo, outletRepo port.IOutletRepo) port.IProducService {
 	return &ProductService{
 		repo:         repo,
 		merchantRepo: merchantRepo,
+		outletRepo:   outletRepo,
 	}
 }
 
@@ -55,15 +57,23 @@ func (r ProductService) NewProduct(req *dto.NewProductRequest) (*dto.NewProductR
 	defer f.Close()
 	_, _ = io.Copy(f, req.File)
 
-	form := domain.Product{
-		SKUID:       SKUID,
-		MerchantID:  merchant.MerchantID,
-		ProductName: req.ProductName,
-		Image:       filePath,
-		Quantity:    req.Quantity,
+	form := domain.ProductPrice{
+		Product: domain.Product{
+			SKUID:       SKUID,
+			MerchantID:  merchant.MerchantID,
+			ProductName: req.ProductName,
+			Image:       filePath,
+			Quantity:    req.Quantity},
+		Price: req.Price,
 	}
 
-	err = r.repo.Create(&form)
+	// get outlet list
+	outletList, err := r.outletRepo.FindAllByMerchantID(merchant.MerchantID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = r.repo.Create(&form, outletList)
 	if err != nil {
 		return nil, err
 	}

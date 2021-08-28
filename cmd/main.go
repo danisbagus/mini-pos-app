@@ -45,13 +45,13 @@ func main() {
 	customerService := service.NewCustomerService(customerRepo)
 	customerHandler := handler.CustomerHandler{Service: customerService}
 
-	productRepo := repo.NewProductRepo(client)
-	productService := service.NewProductService(productRepo, merchantRepo)
-	productHandler := handler.ProductHandler{Service: productService}
-
 	outletRepo := repo.NewOutletRepo(client)
 	outletService := service.NewOutletService(outletRepo, merchantRepo)
 	outletHandler := handler.OutletHandler{Service: outletService}
+
+	productRepo := repo.NewProductRepo(client)
+	productService := service.NewProductService(productRepo, merchantRepo, outletRepo)
+	productHandler := handler.ProductHandler{Service: productService}
 
 	// routing
 	authRouter := router.PathPrefix("/auth").Subrouter()

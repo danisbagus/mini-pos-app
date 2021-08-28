@@ -7,7 +7,7 @@ import (
 )
 
 type IProductRepo interface {
-	Create(data *domain.Product) *errs.AppError
+	Create(data *domain.ProductPrice, outlets []domain.Outlet) *errs.AppError
 }
 
 type IProducService interface {

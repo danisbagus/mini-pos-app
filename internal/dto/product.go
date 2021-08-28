@@ -14,6 +14,7 @@ type NewProductRequest struct {
 	MerchantID  int64  `json:"-"`
 	Image       string `json:"-"`
 	Quantity    int64  `json:"-"`
+	Price       int64  `json:"-"`
 	File        multipart.File
 }
 
@@ -23,15 +24,17 @@ type NewProductResponse struct {
 	ProductName string `json:"product_name"`
 	Image       string `json:"image"`
 	Quantity    int64  `json:"quantity"`
+	Price       int64  `json:"price"`
 }
 
-func NewNewProductResponse(data *domain.Product) *NewProductResponse {
+func NewNewProductResponse(data *domain.ProductPrice) *NewProductResponse {
 	result := &NewProductResponse{
 		SKUID:       data.SKUID,
 		MerchantID:  data.MerchantID,
 		ProductName: data.ProductName,
 		Image:       data.Image,
 		Quantity:    data.Quantity,
+		Price:       data.Price,
 	}
 	return result
 }
@@ -48,8 +51,17 @@ func (r NewProductRequest) Validate() *errs.AppError {
 
 	}
 
+	if err := validation.Validate(r.Price, validation.Required); err != nil {
+		return errs.NewBadRequestError("Product price is required")
+
+	}
+
 	if r.Quantity <= 0 {
 		return errs.NewValidationError("Product quantity must more than 0")
+	}
+
+	if r.Price <= 0 {
+		return errs.NewValidationError("Product price must more than 0")
 	}
 	return nil
 }
