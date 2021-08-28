@@ -18,7 +18,7 @@ CREATE TABLE `merchants` (
   `merchant_name` varchar(50) NOT NULL,
   `head_office_address` varchar(100) NOT NULL,
   PRIMARY KEY (`merchant_id`),
-  FOREIGN KEY (`user_id`) REFERENCES users(`user_id`)
+  FOREIGN KEY (`user_id`) REFERENCES users(`user_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 CREATE INDEX idx_merchant_name
 ON merchants (merchant_name);
@@ -29,7 +29,7 @@ CREATE TABLE `customers` (
   `customer_name` varchar(50) NOT NULL,
   `phone` varchar(20) NOT NULL,
   PRIMARY KEY (`customer_id`),
-  FOREIGN KEY (`user_id`) REFERENCES users(`user_id`)
+  FOREIGN KEY (`user_id`) REFERENCES users(`user_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `outlets` (
@@ -38,7 +38,7 @@ CREATE TABLE `outlets` (
   `outlet_name` varchar(50) NOT NULL,
   `address` varchar(100) NOT NULL,
   PRIMARY KEY (`outlet_id`),
-  FOREIGN KEY (`merchant_id`) REFERENCES merchants(`merchant_id`)
+  FOREIGN KEY (`merchant_id`) REFERENCES merchants(`merchant_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `suppliers` (
@@ -54,7 +54,7 @@ CREATE TABLE `products` (
   `image` varchar(255) NULL,
   `quantity` int(11) NOT NULL,
   PRIMARY KEY (`sku_id`),
-  FOREIGN KEY (`merchant_id`) REFERENCES merchants(`merchant_id`)
+  FOREIGN KEY (`merchant_id`) REFERENCES merchants(`merchant_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 CREATE INDEX idx_product_name
 ON products (product_name);
@@ -63,8 +63,8 @@ CREATE TABLE `prices` (
   `sku_id` varchar(10) NOT NULL ,
   `outlet_id` int(11) NOT NULL,
   `price` int(11) NOT NULL,
-  FOREIGN KEY (`sku_id`) REFERENCES products(`sku_id`),
-  FOREIGN KEY (`outlet_id`) REFERENCES outlets(`outlet_id`)
+  FOREIGN KEY (`sku_id`) REFERENCES products(`sku_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`outlet_id`) REFERENCES outlets(`outlet_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `purchase_transactions` (
@@ -76,9 +76,9 @@ CREATE TABLE `purchase_transactions` (
   `total_price` int(11) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`transaction_id`),
-  FOREIGN KEY (`merchant_id`) REFERENCES merchants(`merchant_id`),
-  FOREIGN KEY (`sku_id`) REFERENCES products(`sku_id`),
-  FOREIGN KEY (`supplier_id`) REFERENCES suppliers(`supplier_id`)
+  FOREIGN KEY (`merchant_id`) REFERENCES merchants(`merchant_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`sku_id`) REFERENCES products(`sku_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`supplier_id`) REFERENCES suppliers(`supplier_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `sale_transactions` (
@@ -89,8 +89,8 @@ CREATE TABLE `sale_transactions` (
   `quantity` int(11) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`transaction_id`),
-  FOREIGN KEY (`customer_id`) REFERENCES customers(`customer_id`),
-  FOREIGN KEY (`sku_id`) REFERENCES products(`sku_id`)
+  FOREIGN KEY (`customer_id`) REFERENCES customers(`customer_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`sku_id`) REFERENCES products(`sku_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 LOCK TABLES `users` WRITE;
