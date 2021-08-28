@@ -72,6 +72,7 @@ func main() {
 	authRouter.HandleFunc("/register/customer", authHandler.RegisterCustomer).Methods(http.MethodPost)
 
 	apiRouter.HandleFunc("/merchant/me", merchantHandler.GetMerchantDetailMe).Methods(http.MethodGet)
+	apiRouter.HandleFunc("/merchant/me", merchantHandler.UpdateMerchantMe).Methods(http.MethodPatch)
 
 	apiRouter.HandleFunc("/customer/me", customerHandler.GetCustomerDetailMe).Methods(http.MethodGet)
 

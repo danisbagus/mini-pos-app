@@ -9,8 +9,10 @@ import (
 type IMerchantRepo interface {
 	FindOneByID(merchantID int64) (*domain.UserMerchant, *errs.AppError)
 	FindOneByUserID(userID int64) (*domain.UserMerchant, *errs.AppError)
+	Update(merchatID int64, data *domain.Merchant) *errs.AppError
 }
 
 type IMerchantService interface {
 	GetDetailByUserID(userID int64) (*dto.UserMerchantResponse, *errs.AppError)
+	UpdateProductByUserID(userID int64, data *dto.UpdateMerchanteRequest) *errs.AppError
 }

@@ -61,3 +61,21 @@ func (r MerchantRepo) FindOneByUserID(userID int64) (*domain.UserMerchant, *errs
 
 	return &data, nil
 }
+
+func (r MerchantRepo) Update(merchatID int64, data *domain.Merchant) *errs.AppError {
+	updateSql := "update merchants set merchant_name=?, head_office_address=? where merchant_id=?"
+
+	stmt, err := r.db.Prepare(updateSql)
+	if err != nil {
+		logger.Error("Error while update product " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	_, err = stmt.Exec(data.MerchantName, data.HearOfficeAddress, merchatID)
+	if err != nil {
+		logger.Error("Error while update product " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	return nil
+}
