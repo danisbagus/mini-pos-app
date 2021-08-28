@@ -97,10 +97,11 @@ CREATE TABLE `sale_transactions` (
 LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` VALUES 
-  (1,'MERCHANT','merchant1@live.com','$2a$14$w0cQq0zj1eAuy45xtKIif.3ZUoJbuWClEwK35Xhh3U1pLNOtOf/4m','2020-08-09 10:27:22'),
-  (2,'MERCHANT','merchant2@live.com','$2a$14$w0cQq0zj1eAuy45xtKIif.3ZUoJbuWClEwK35Xhh3U1pLNOtOf/4m','2020-08-09 10:27:22'),
-  (3,'CUSTOMER','customer1@live.com','$2a$14$w0cQq0zj1eAuy45xtKIif.3ZUoJbuWClEwK35Xhh3U1pLNOtOf/4m','2020-08-09 10:27:22'),
-  (4,'CUSTOMER','customer2@live.com','$2a$14$w0cQq0zj1eAuy45xtKIif.3ZUoJbuWClEwK35Xhh3U1pLNOtOf/4m','2020-08-09 10:27:22');
+  (1,'ADMIN','admin@live.com','$2a$14$w0cQq0zj1eAuy45xtKIif.3ZUoJbuWClEwK35Xhh3U1pLNOtOf/4m','2020-08-09 10:27:22'),
+  (2,'MERCHANT','merchant1@live.com','$2a$14$w0cQq0zj1eAuy45xtKIif.3ZUoJbuWClEwK35Xhh3U1pLNOtOf/4m','2020-08-09 10:27:22'),
+  (3,'MERCHANT','merchant2@live.com','$2a$14$w0cQq0zj1eAuy45xtKIif.3ZUoJbuWClEwK35Xhh3U1pLNOtOf/4m','2020-08-09 10:27:22'),
+  (4,'CUSTOMER','customer1@live.com','$2a$14$w0cQq0zj1eAuy45xtKIif.3ZUoJbuWClEwK35Xhh3U1pLNOtOf/4m','2020-08-09 10:27:22'),
+  (5,'CUSTOMER','customer2@live.com','$2a$14$w0cQq0zj1eAuy45xtKIif.3ZUoJbuWClEwK35Xhh3U1pLNOtOf/4m','2020-08-09 10:27:22');
 
 UNLOCK TABLES;
 
