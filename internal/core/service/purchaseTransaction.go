@@ -80,3 +80,28 @@ func (r PurchaseTransactionService) GetTransactionReport(userID int64) (*dto.Pur
 
 	return response, nil
 }
+
+func (r PurchaseTransactionService) GetTransactionReportByProduct(SKUID string, userID int64) (*dto.PurchaseTransactionList, *errs.AppError) {
+	merchant, err := r.merchantRepo.FindOneByUserID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	product, err := r.productRepo.FindOne(SKUID)
+	if err != nil {
+		return nil, err
+	}
+
+	if product.MerchantID != merchant.MerchantID {
+		return nil, errs.NewBadRequestError("Cannot get product data of another merchant")
+	}
+
+	dataList, err := r.repo.FetchAllBySKUID(SKUID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.NewGetPurchaseTransactionReport(dataList)
+
+	return response, nil
+}

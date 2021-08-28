@@ -8,6 +8,7 @@ import (
 	"github.com/danisbagus/mini-pos-app/internal/core/port"
 	"github.com/danisbagus/mini-pos-app/internal/dto"
 	"github.com/danisbagus/mini-pos-app/pkg/errs"
+	"github.com/gorilla/mux"
 )
 
 type PurchaseTransactionHandler struct {
@@ -58,6 +59,30 @@ func (rc PurchaseTransactionHandler) GetTransactionReport(w http.ResponseWriter,
 
 	}
 	dataList, err := rc.Service.GetTransactionReport(claimData.UserID)
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, dataList)
+}
+
+func (rc PurchaseTransactionHandler) GetTransactionProductReport(w http.ResponseWriter, r *http.Request) {
+	claimData, appErr := GetClaimData(r)
+	if appErr != nil {
+		writeResponse(w, appErr.Code, appErr.AsMessage())
+		return
+	}
+
+	if claimData.Role != "MERCHANT" {
+		err := errs.NewAuthorizationError(fmt.Sprintf("%s role is not authorized", claimData.Role))
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+
+	vars := mux.Vars(r)
+	SKUID := vars["sku_id"]
+
+	dataList, err := rc.Service.GetTransactionReportByProduct(SKUID, claimData.UserID)
 	if err != nil {
 		writeResponse(w, err.Code, err.AsMessage())
 		return

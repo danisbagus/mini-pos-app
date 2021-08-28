@@ -70,3 +70,22 @@ func (r PurchaseTransactionRepo) FetchAllByMerchantID(merchantID int64) ([]domai
 
 	return transactions, nil
 }
+
+func (r PurchaseTransactionRepo) FetchAllBySKUID(SKUID string) ([]domain.PurchaseTransaction, *errs.AppError) {
+	transactions := make([]domain.PurchaseTransaction, 0)
+
+	findAllByMerchantIDSql := `
+	select 
+		pt.* 
+	from purchase_transactions pt 
+	where pt.sku_id=?
+	`
+	err := r.db.Select(&transactions, findAllByMerchantIDSql, SKUID)
+
+	if err != nil {
+		logger.Error("Error while quering find all purchase transaction by sku id " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	return transactions, nil
+}
