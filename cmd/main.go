@@ -60,7 +60,7 @@ func main() {
 	purchaseTransactionHandler := handler.PurchaseTransactionHandler{Service: purchaseTransactionService}
 
 	saleTransactionRepo := repo.NewSaleTransactionRepo(client)
-	saleTransactionService := service.NewSaleTransactionService(saleTransactionRepo, productRepo, customerRepo, priceRepo)
+	saleTransactionService := service.NewSaleTransactionService(saleTransactionRepo, productRepo, merchantRepo, customerRepo, priceRepo, outletRepo)
 	saleTransactionHandler := handler.SaleTransactionHandler{Service: saleTransactionService}
 
 	// routing
@@ -87,7 +87,9 @@ func main() {
 	apiRouter.HandleFunc("/transaction/purchase", purchaseTransactionHandler.NewTransaction).Methods(http.MethodPost)
 	apiRouter.HandleFunc("/transaction/sale", saleTransactionHandler.NewTransaction).Methods(http.MethodPost)
 	apiRouter.HandleFunc("/transaction/purchase/report", purchaseTransactionHandler.GetTransactionReport).Methods(http.MethodGet)
+	apiRouter.HandleFunc("/transaction/sale/report", saleTransactionHandler.GetTransactionReport).Methods(http.MethodGet)
 	apiRouter.HandleFunc("/transaction/purchase/product/{sku_id}", purchaseTransactionHandler.GetTransactionProductReport).Methods(http.MethodGet)
+	apiRouter.HandleFunc("/transaction/sale/product/{sku_id}", saleTransactionHandler.GetTransactionProductReport).Methods(http.MethodGet)
 
 	// middleware
 	authMiddleware := middleware.AuthMiddleware{Repo: repo.NewAuthRepo(client)}

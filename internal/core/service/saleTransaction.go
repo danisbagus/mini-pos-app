@@ -13,16 +13,20 @@ import (
 type SaleTransactionService struct {
 	repo         port.ISaleTransactionRepo
 	productRepo  port.IProductRepo
+	merchantRepo port.IMerchantRepo
 	customerRepo port.ICustomerRepo
 	priceRepo    port.IPriceRepo
+	outletRepo   port.IOutletRepo
 }
 
-func NewSaleTransactionService(repo port.ISaleTransactionRepo, productRepo port.IProductRepo, customerRepo port.ICustomerRepo, priceRepo port.IPriceRepo) port.ISaleTransactionService {
+func NewSaleTransactionService(repo port.ISaleTransactionRepo, productRepo port.IProductRepo, merchantRepo port.IMerchantRepo, customerRepo port.ICustomerRepo, priceRepo port.IPriceRepo, outletRepo port.IOutletRepo) port.ISaleTransactionService {
 	return &SaleTransactionService{
 		repo:         repo,
 		productRepo:  productRepo,
+		merchantRepo: merchantRepo,
 		customerRepo: customerRepo,
 		priceRepo:    priceRepo,
+		outletRepo:   outletRepo,
 	}
 }
 
@@ -57,7 +61,9 @@ func (r SaleTransactionService) NewTransaction(req *dto.NewSaleTransactionReques
 	}
 	totalPrice := priceData.Price * req.Quantity
 
-	// validate outlite ...
+	if _, err = r.outletRepo.FindOneByID(req.OutletID); err != nil {
+		return nil, err
+	}
 
 	form := domain.SaleTransaction{
 		TransactionID: transactionID,
@@ -74,6 +80,47 @@ func (r SaleTransactionService) NewTransaction(req *dto.NewSaleTransactionReques
 		return nil, err
 	}
 	response := dto.NewNewSaleTransactionResponse(&form)
+
+	return response, nil
+}
+
+func (r SaleTransactionService) GetTransactionReport(userID int64) (*dto.SaleTransactionList, *errs.AppError) {
+	merchant, err := r.merchantRepo.FindOneByUserID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	dataList, err := r.repo.FetchAllByMerchantID(merchant.MerchantID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.NewGetSaleTransactionReport(dataList)
+
+	return response, nil
+}
+
+func (r SaleTransactionService) GetTransactionReportByProduct(SKUID string, userID int64) (*dto.SaleTransactionList, *errs.AppError) {
+	merchant, err := r.merchantRepo.FindOneByUserID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	product, err := r.productRepo.FindOne(SKUID)
+	if err != nil {
+		return nil, err
+	}
+
+	if product.MerchantID != merchant.MerchantID {
+		return nil, errs.NewBadRequestError("Cannot get product data of another merchant")
+	}
+
+	dataList, err := r.repo.FetchAllBySKUID(SKUID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.NewGetSaleTransactionReport(dataList)
 
 	return response, nil
 }

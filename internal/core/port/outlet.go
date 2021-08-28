@@ -8,6 +8,7 @@ import (
 
 type IOutletRepo interface {
 	FindAllByMerchantID(merchantID int64) ([]domain.Outlet, *errs.AppError)
+	FindOneByID(outletID int64) (*domain.Outlet, *errs.AppError)
 }
 
 type IOutletService interface {

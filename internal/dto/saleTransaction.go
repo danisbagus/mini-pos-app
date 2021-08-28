@@ -23,6 +23,27 @@ type NewSaleTransactionResponse struct {
 	CreatedAt     string `json:"created_at"`
 }
 
+type SaleTransactionList struct {
+	SaleTransaction []NewSaleTransactionResponse `json:"data"`
+}
+
+func NewGetSaleTransactionReport(data []domain.SaleTransaction) *SaleTransactionList {
+	dataList := make([]NewSaleTransactionResponse, len(data))
+
+	for k, v := range data {
+		dataList[k] = NewSaleTransactionResponse{
+			TransactionID: v.TransactionID,
+			CustomerID:    v.CustomerID,
+			SKUID:         v.SKUID,
+			OutletID:      v.OutletID,
+			Quantity:      v.Quantity,
+			TotalPrice:    v.TotalPrice,
+			CreatedAt:     v.CreatedAt,
+		}
+	}
+	return &SaleTransactionList{SaleTransaction: dataList}
+}
+
 func NewNewSaleTransactionResponse(data *domain.SaleTransaction) *NewSaleTransactionResponse {
 	result := &NewSaleTransactionResponse{
 		TransactionID: data.TransactionID,
