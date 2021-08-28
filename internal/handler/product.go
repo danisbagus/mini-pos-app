@@ -124,6 +124,27 @@ func (rc ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	writeResponse(w, http.StatusOK, data)
 }
 
+func (rc ProductHandler) GetProductListMe(w http.ResponseWriter, r *http.Request) {
+	claimData, appErr := GetClaimData(r)
+	if appErr != nil {
+		writeResponse(w, appErr.Code, appErr.AsMessage())
+		return
+	}
+
+	if claimData.Role != "MERCHANT" {
+		err := errs.NewAuthorizationError(fmt.Sprintf("%s role is not authorized", claimData.Role))
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+
+	}
+	dataList, err := rc.Service.GetAllByUserID(claimData.UserID)
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, dataList)
+}
+
 func (rc ProductHandler) GetProductDetail(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)

@@ -64,6 +64,10 @@ type ProductResponse struct {
 	Price       []ProductPrice `json:"prices"`
 }
 
+type ProductListResponse struct {
+	Products []ProductResponse `json:"data"`
+}
+
 func NewNewProductResponse(data *domain.ProductPrice) *NewProductResponse {
 	result := &NewProductResponse{
 		SKUID:       data.SKUID,
@@ -86,6 +90,22 @@ func NewUpdateProductResponse(data *domain.Product) *UpdateProductResponse {
 	}
 
 	return result
+}
+
+func NewGetListProductResponse(data []ProductResponse) *ProductListResponse {
+	dataList := make([]ProductResponse, len(data))
+
+	for k, v := range data {
+		dataList[k] = ProductResponse{
+			SKUID:       v.SKUID,
+			MerchantID:  v.MerchantID,
+			ProductName: v.ProductName,
+			Image:       v.Image,
+			Quantity:    v.Quantity,
+			Price:       v.Price,
+		}
+	}
+	return &ProductListResponse{Products: dataList}
 }
 
 func NewGetDetailProductResponse(data *domain.Product, prices []domain.Prices) *ProductResponse {

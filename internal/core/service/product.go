@@ -84,6 +84,55 @@ func (r ProductService) NewProduct(req *dto.NewProductRequest) (*dto.NewProductR
 	return response, nil
 }
 
+func (r ProductService) GetAllByUserID(UserID int64) (*dto.ProductListResponse, *errs.AppError) {
+
+	// get merchant data
+	merchant, err := r.merchantRepo.FindOneByUserID(UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	dataList, err := r.repo.FindAllByMerchantID(merchant.MerchantID)
+	if err != nil {
+		return nil, err
+	}
+
+	priceMerchant, err := r.priceRepo.FindAllByMerchantID(merchant.MerchantID)
+	if err != nil {
+		return nil, err
+	}
+
+	newData := make([]dto.ProductResponse, 0)
+
+	for _, v := range dataList {
+
+		prices := make([]dto.ProductPrice, 0)
+		for _, v2 := range priceMerchant {
+			if v.SKUID == v2.SKUID {
+				price := dto.ProductPrice{
+					OutletID: v2.OutletID,
+					Price:    v2.Price,
+				}
+				prices = append(prices, price)
+			}
+		}
+
+		product := dto.ProductResponse{
+			SKUID:       v.SKUID,
+			MerchantID:  v.MerchantID,
+			ProductName: v.ProductName,
+			Quantity:    v.Quantity,
+			Price:       prices,
+		}
+
+		newData = append(newData, product)
+	}
+
+	response := dto.NewGetListProductResponse(newData)
+
+	return response, nil
+}
+
 func (r ProductService) GetDetail(SKUID string) (*dto.ProductResponse, *errs.AppError) {
 	data, err := r.repo.FindOne(SKUID)
 	if err != nil {

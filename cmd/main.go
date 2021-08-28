@@ -68,6 +68,7 @@ func main() {
 	apiRouter.HandleFunc("/customer/me", customerHandler.GetCustomerDetailMe).Methods(http.MethodGet)
 
 	apiRouter.HandleFunc("/product", productHandler.NewProduct).Methods(http.MethodPost)
+	apiRouter.HandleFunc("/product/me", productHandler.GetProductListMe).Methods(http.MethodGet)
 	apiRouter.HandleFunc("/product/{sku_id}", productHandler.GetProductDetail).Methods(http.MethodGet)
 	apiRouter.HandleFunc("/product/{sku_id}", productHandler.UpdateProduct).Methods(http.MethodPatch)
 	apiRouter.HandleFunc("/product/{sku_id}/price", productHandler.UpdateProductPrice).Methods(http.MethodPatch)

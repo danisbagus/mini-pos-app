@@ -72,6 +72,20 @@ func (r ProductRepo) Create(data *domain.ProductPrice, outlets []domain.Outlet) 
 	return nil
 }
 
+func (r ProductRepo) FindAllByMerchantID(MerchantID int64) ([]domain.Product, *errs.AppError) {
+	products := make([]domain.Product, 0)
+
+	findAllByMerchantIDSql := "select sku_id, merchant_id, product_name, image, quantity from products where merchant_id=?"
+	err := r.db.Select(&products, findAllByMerchantIDSql, MerchantID)
+
+	if err != nil {
+		logger.Error("Error while quering find all product by merchant id " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	return products, nil
+}
+
 func (r ProductRepo) FindOne(SKUID string) (*domain.Product, *errs.AppError) {
 	var data domain.Product
 
