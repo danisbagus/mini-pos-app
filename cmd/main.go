@@ -86,6 +86,7 @@ func main() {
 
 	apiRouter.HandleFunc("/transaction/purchase", purchaseTransactionHandler.NewTransaction).Methods(http.MethodPost)
 	apiRouter.HandleFunc("/transaction/sale", saleTransactionHandler.NewTransaction).Methods(http.MethodPost)
+	apiRouter.HandleFunc("/transaction/purchase/report", purchaseTransactionHandler.GetTransactionReport).Methods(http.MethodGet)
 
 	// middleware
 	authMiddleware := middleware.AuthMiddleware{Repo: repo.NewAuthRepo(client)}

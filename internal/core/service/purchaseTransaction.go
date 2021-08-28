@@ -64,3 +64,19 @@ func (r PurchaseTransactionService) NewTransaction(req *dto.NewPurchaseTransacti
 
 	return response, nil
 }
+
+func (r PurchaseTransactionService) GetTransactionReport(userID int64) (*dto.PurchaseTransactionList, *errs.AppError) {
+	merchant, err := r.merchantRepo.FindOneByUserID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	dataList, err := r.repo.FetchAllByMerchantID(merchant.MerchantID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.NewGetPurchaseTransactionReport(dataList)
+
+	return response, nil
+}

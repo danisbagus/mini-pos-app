@@ -43,3 +43,24 @@ func (rc PurchaseTransactionHandler) NewTransaction(w http.ResponseWriter, r *ht
 	}
 	writeResponse(w, http.StatusCreated, data)
 }
+
+func (rc PurchaseTransactionHandler) GetTransactionReport(w http.ResponseWriter, r *http.Request) {
+	claimData, appErr := GetClaimData(r)
+	if appErr != nil {
+		writeResponse(w, appErr.Code, appErr.AsMessage())
+		return
+	}
+
+	if claimData.Role != "MERCHANT" {
+		err := errs.NewAuthorizationError(fmt.Sprintf("%s role is not authorized", claimData.Role))
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+
+	}
+	dataList, err := rc.Service.GetTransactionReport(claimData.UserID)
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, dataList)
+}

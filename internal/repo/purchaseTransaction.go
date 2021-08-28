@@ -51,3 +51,22 @@ func (r PurchaseTransactionRepo) Create(data *domain.PurchaseTransaction) *errs.
 
 	return nil
 }
+
+func (r PurchaseTransactionRepo) FetchAllByMerchantID(merchantID int64) ([]domain.PurchaseTransaction, *errs.AppError) {
+	transactions := make([]domain.PurchaseTransaction, 0)
+
+	findAllByMerchantIDSql := `
+	select 
+		pt.* 
+	from purchase_transactions pt 
+	where pt.merchant_id=?
+	`
+	err := r.db.Select(&transactions, findAllByMerchantIDSql, merchantID)
+
+	if err != nil {
+		logger.Error("Error while quering find all purchase transaction by merchant id " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	return transactions, nil
+}

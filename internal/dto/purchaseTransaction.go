@@ -38,6 +38,27 @@ func NewNewPurchaseTransactionResponse(data *domain.PurchaseTransaction) *NewPur
 	return result
 }
 
+type PurchaseTransactionList struct {
+	PurchaseTransaction []NewPurchaseTransactionResponse `json:"data"`
+}
+
+func NewGetPurchaseTransactionReport(data []domain.PurchaseTransaction) *PurchaseTransactionList {
+	dataList := make([]NewPurchaseTransactionResponse, len(data))
+
+	for k, v := range data {
+		dataList[k] = NewPurchaseTransactionResponse{
+			TransactionID: v.TransactionID,
+			MerchantID:    v.MerchantID,
+			SKUID:         v.SKUID,
+			SuppierID:     v.SuppierID,
+			Quantity:      v.Quantity,
+			TotalPrice:    v.TotalPrice,
+			CreatedAt:     v.CreatedAt,
+		}
+	}
+	return &PurchaseTransactionList{PurchaseTransaction: dataList}
+}
+
 func (r NewPurchaseTransactionRequest) Validate() *errs.AppError {
 	if err := validation.Validate(r.SKUID, validation.Required); err != nil {
 		return errs.NewBadRequestError("SKU ID is required")
