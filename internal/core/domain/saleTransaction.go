@@ -7,5 +7,5 @@ type SaleTransaction struct {
 	OutletID      int64  `db:"supplier_id"`
 	Quantity      int64  `db:"quantity"`
 	TotalPrice    int64  `db:"total_price"`
-	CreatedAt     int64  `db:"created_at"`
+	CreatedAt     string `db:"created_at"`
 }

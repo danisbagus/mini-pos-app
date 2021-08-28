@@ -37,8 +37,6 @@ func (r PurchaseTransactionService) NewTransaction(req *dto.NewPurchaseTransacti
 		return nil, err
 	}
 
-	fmt.Println("user merchant", merchant)
-
 	_, err = r.productRepo.FindOne(req.SKUID)
 	if err != nil {
 		return nil, err

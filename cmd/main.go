@@ -59,6 +59,10 @@ func main() {
 	purchaseTransactionService := service.NewPurchaseTransactionService(purchaseTransactionRepo, productRepo, merchantRepo)
 	purchaseTransactionHandler := handler.PurchaseTransactionHandler{Service: purchaseTransactionService}
 
+	saleTransactionRepo := repo.NewSaleTransactionRepo(client)
+	saleTransactionService := service.NewSaleTransactionService(saleTransactionRepo, productRepo, customerRepo, priceRepo)
+	saleTransactionHandler := handler.SaleTransactionHandler{Service: saleTransactionService}
+
 	// routing
 	authRouter := router.PathPrefix("/auth").Subrouter()
 	apiRouter := router.PathPrefix("/api").Subrouter()
@@ -81,6 +85,7 @@ func main() {
 	apiRouter.HandleFunc("/outlet/merchant/{merchant_id}", outletHandler.GetOutletListByMerchantID).Methods(http.MethodGet)
 
 	apiRouter.HandleFunc("/transaction/purchase", purchaseTransactionHandler.NewTransaction).Methods(http.MethodPost)
+	apiRouter.HandleFunc("/transaction/sale", saleTransactionHandler.NewTransaction).Methods(http.MethodPost)
 
 	// middleware
 	authMiddleware := middleware.AuthMiddleware{Repo: repo.NewAuthRepo(client)}

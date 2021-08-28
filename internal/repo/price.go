@@ -50,3 +50,17 @@ func (r PriceRepo) FindAllByMerchantID(merchantID int64) ([]domain.PricesMerchan
 
 	return outlets, nil
 }
+
+func (r PriceRepo) FindAllBySKUIDAndOutletID(SKUID string, outliteID uint64) (*domain.Prices, *errs.AppError) {
+	var data domain.Prices
+
+	findOneBySKUIDAndOutletIDSql := "select sku_id, outlet_id, price from prices where sku_id=? and outlet_id=? "
+	err := r.db.Get(&data, findOneBySKUIDAndOutletIDSql, SKUID, outliteID)
+
+	if err != nil {
+		logger.Error("Error while quering find one prices by sku id and outlet ud" + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	return &data, nil
+}

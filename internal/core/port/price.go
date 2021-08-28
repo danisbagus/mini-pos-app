@@ -8,6 +8,7 @@ import (
 type IPriceRepo interface {
 	FindAllBySKUID(SKUID string) ([]domain.Prices, *errs.AppError)
 	FindAllByMerchantID(merchantID int64) ([]domain.PricesMerchant, *errs.AppError)
+	FindAllBySKUIDAndOutletID(SKUID string, outliteID uint64) (*domain.Prices, *errs.AppError)
 }
 
 // type IPriceService interface {
