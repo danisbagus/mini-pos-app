@@ -6,23 +6,23 @@ import (
 	"github.com/danisbagus/mini-pos-app/pkg/errs"
 )
 
-type MerchantService struct {
-	repo port.IMerchantRepo
+type CustomerService struct {
+	repo port.ICustomerRepo
 }
 
-func NewMerchantService(repo port.IMerchantRepo) port.IMerchantService {
-	return &MerchantService{
+func NewCustomerService(repo port.ICustomerRepo) port.ICustomerService {
+	return &CustomerService{
 		repo: repo,
 	}
 }
 
-func (r MerchantService) GetDetailByUserID(userID int64) (*dto.UserMerchantResponse, *errs.AppError) {
+func (r CustomerService) GetDetailByUserID(userID int64) (*dto.UserCustomerResponse, *errs.AppError) {
 	data, err := r.repo.FindOneByUserID(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	response := dto.NewGetDetailUserMerchantResponse(data)
+	response := dto.NewGetDetailUserCustomerResponse(data)
 
 	return response, nil
 }

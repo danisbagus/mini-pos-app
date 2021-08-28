@@ -11,5 +11,5 @@ type IMerchantRepo interface {
 }
 
 type IMerchantService interface {
-	GetDetaiByUserID(userID int64) (*dto.UserMerchantResponse, *errs.AppError)
+	GetDetailByUserID(userID int64) (*dto.UserMerchantResponse, *errs.AppError)
 }

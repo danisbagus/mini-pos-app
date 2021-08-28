@@ -50,7 +50,6 @@ func (r AuthRepo) Verify(token string) *errs.AppError {
 	if !jwtToken.Valid {
 		return errs.NewAuthorizationError("Invalid token")
 	}
-	// claims := jwtToken.Claims.(*domain.AccessTokenClaims)
 	return nil
 }
 
