@@ -20,6 +20,27 @@ func NewMerchantRepo(db *sqlx.DB) port.IMerchantRepo {
 	}
 }
 
+func (r MerchantRepo) FindOneByID(merchantID int64) (*domain.UserMerchant, *errs.AppError) {
+	var data domain.UserMerchant
+
+	findOneByUserIDSql := `
+	select u.*, m.merchant_id, m.merchant_name, m.head_office_address from 
+	merchants m inner join users u on u.user_id = m.user_id where m.merchant_id = ?`
+
+	err := r.db.Get(&data, findOneByUserIDSql, merchantID)
+
+	if err != nil {
+		logger.Error("Error while get find one mechant by id " + err.Error())
+		if err == sql.ErrNoRows {
+			return nil, errs.NewNotFoundError("merchant not found")
+		} else {
+			return nil, errs.NewUnexpectedError("Unexpected database error")
+		}
+	}
+
+	return &data, nil
+}
+
 func (r MerchantRepo) FindOneByUserID(userID int64) (*domain.UserMerchant, *errs.AppError) {
 	var data domain.UserMerchant
 

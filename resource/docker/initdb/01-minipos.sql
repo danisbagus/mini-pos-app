@@ -141,10 +141,10 @@ UNLOCK TABLES;
 LOCK TABLES `products` WRITE;
 
 INSERT INTO `products` VALUES 
-  ('PGK8R6O',1,'Sneaker Modern 15','/internal/resource/sneaker.jpg', 100),
-  ('PSK8RPO',1,'Flatshoes Panorama','/internal/resource/flatshoes.jpg', PSK8RPO),
-  ('PLK8R0O',2,'Casual Eterna','/internal/resource/casual.jpg', 30),
-  ('PMK8OPO',2,'Cressidi Omega','/internal/resource/cressidi.jpg',90);
+  ('PGK8R6O',1,'Sneaker Modern 15','localhost:7000/public/uploads/1630123199238701473.png', 100),
+  ('PSK8RPO',1,'Flatshoes Panorama','localhost:7000/public/uploads/1630123199238701473.png', 20),
+  ('PLK8R0O',2,'Casual Eterna','localhost:7000/public/uploads/1630123199238701473.png', 30),
+  ('PMK8OPO',2,'Cressidi Omega','localhost:7000/public/uploads/1630123199238701473.png',90);
 
 UNLOCK TABLES;
 

@@ -7,6 +7,7 @@ import (
 )
 
 type IMerchantRepo interface {
+	FindOneByID(merchantID int64) (*domain.UserMerchant, *errs.AppError)
 	FindOneByUserID(userID int64) (*domain.UserMerchant, *errs.AppError)
 }
 
