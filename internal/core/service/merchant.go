@@ -29,7 +29,7 @@ func (r MerchantService) GetDetailByUserID(userID int64) (*dto.UserMerchantRespo
 	return response, nil
 }
 
-func (r MerchantService) UpdateProductByUserID(userID int64, req *dto.UpdateMerchanteRequest) *errs.AppError {
+func (r MerchantService) UpdateMerchantByUserID(userID int64, req *dto.UpdateMerchanteRequest) *errs.AppError {
 
 	err := req.Validate()
 	if err != nil {

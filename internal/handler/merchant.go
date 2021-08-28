@@ -58,7 +58,7 @@ func (rc MerchantHandler) UpdateMerchantMe(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err := rc.Service.UpdateProductByUserID(claimData.UserID, &request)
+	err := rc.Service.UpdateMerchantByUserID(claimData.UserID, &request)
 	if err != nil {
 		writeResponse(w, err.Code, err.AsMessage())
 		return

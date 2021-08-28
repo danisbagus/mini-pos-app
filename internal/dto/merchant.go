@@ -34,7 +34,7 @@ func NewGetDetailUserMerchantResponse(data *domain.UserMerchant) *UserMerchantRe
 
 func (r UpdateMerchanteRequest) Validate() *errs.AppError {
 	if err := validation.Validate(r.MerchantName, validation.Required); err != nil {
-		return errs.NewBadRequestError("SKU ID is required")
+		return errs.NewBadRequestError("MerchantName is required")
 	}
 
 	if err := validation.Validate(r.HearOfficeAddress, validation.Required); err != nil {

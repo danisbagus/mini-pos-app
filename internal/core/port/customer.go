@@ -8,8 +8,10 @@ import (
 
 type ICustomerRepo interface {
 	FindOneByUserID(userID int64) (*domain.UserCustomer, *errs.AppError)
+	Update(customerID int64, data *domain.Customer) *errs.AppError
 }
 
 type ICustomerService interface {
 	GetDetailByUserID(userID int64) (*dto.UserCustomerResponse, *errs.AppError)
+	UpdateCustomerByUserID(userID int64, data *dto.UpdateCustomerRequest) *errs.AppError
 }

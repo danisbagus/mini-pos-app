@@ -14,5 +14,5 @@ type IMerchantRepo interface {
 
 type IMerchantService interface {
 	GetDetailByUserID(userID int64) (*dto.UserMerchantResponse, *errs.AppError)
-	UpdateProductByUserID(userID int64, data *dto.UpdateMerchanteRequest) *errs.AppError
+	UpdateMerchantByUserID(userID int64, data *dto.UpdateMerchanteRequest) *errs.AppError
 }

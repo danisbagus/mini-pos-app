@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/danisbagus/mini-pos-app/internal/core/domain"
 	"github.com/danisbagus/mini-pos-app/internal/core/port"
 	"github.com/danisbagus/mini-pos-app/internal/dto"
 	"github.com/danisbagus/mini-pos-app/pkg/errs"
@@ -25,4 +26,29 @@ func (r CustomerService) GetDetailByUserID(userID int64) (*dto.UserCustomerRespo
 	response := dto.NewGetDetailUserCustomerResponse(data)
 
 	return response, nil
+}
+
+func (r CustomerService) UpdateCustomerByUserID(userID int64, req *dto.UpdateCustomerRequest) *errs.AppError {
+
+	err := req.Validate()
+	if err != nil {
+		return err
+	}
+
+	customer, err := r.GetDetailByUserID(userID)
+	if err != nil {
+		return err
+	}
+
+	form := domain.Customer{
+		CustomerName: req.CustomerName,
+		Phone:        req.Phone,
+	}
+
+	err = r.repo.Update(customer.CustomerID, &form)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

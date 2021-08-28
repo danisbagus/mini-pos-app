@@ -40,3 +40,21 @@ func (r CustomerRepo) FindOneByUserID(userID int64) (*domain.UserCustomer, *errs
 
 	return &data, nil
 }
+
+func (r CustomerRepo) Update(customerID int64, data *domain.Customer) *errs.AppError {
+	updateSql := "update customers set customer_name=?, phone=? where customer_id=?"
+
+	stmt, err := r.db.Prepare(updateSql)
+	if err != nil {
+		logger.Error("Error while update product " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	_, err = stmt.Exec(data.CustomerName, data.Phone, customerID)
+	if err != nil {
+		logger.Error("Error while update product " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	return nil
+}
