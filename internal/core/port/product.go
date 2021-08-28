@@ -8,8 +8,10 @@ import (
 
 type IProductRepo interface {
 	Create(data *domain.ProductPrice, outlets []domain.Outlet) *errs.AppError
+	FindOne(SKUID string) (*domain.Product, *errs.AppError)
 }
 
 type IProducService interface {
 	NewProduct(data *dto.NewProductRequest) (*dto.NewProductResponse, *errs.AppError)
+	GetDetail(SKUID string) (*dto.ProductResponse, *errs.AppError)
 }

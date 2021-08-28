@@ -20,13 +20,15 @@ type ProductService struct {
 	repo         port.IProductRepo
 	merchantRepo port.IMerchantRepo
 	outletRepo   port.IOutletRepo
+	priceRepo    port.IPriceRepo
 }
 
-func NewProductService(repo port.IProductRepo, merchantRepo port.IMerchantRepo, outletRepo port.IOutletRepo) port.IProducService {
+func NewProductService(repo port.IProductRepo, merchantRepo port.IMerchantRepo, outletRepo port.IOutletRepo, priceRepo port.IPriceRepo) port.IProducService {
 	return &ProductService{
 		repo:         repo,
 		merchantRepo: merchantRepo,
 		outletRepo:   outletRepo,
+		priceRepo:    priceRepo,
 	}
 }
 
@@ -78,6 +80,22 @@ func (r ProductService) NewProduct(req *dto.NewProductRequest) (*dto.NewProductR
 		return nil, err
 	}
 	response := dto.NewNewProductResponse(&form)
+
+	return response, nil
+}
+
+func (r ProductService) GetDetail(SKUID string) (*dto.ProductResponse, *errs.AppError) {
+	data, err := r.repo.FindOne(SKUID)
+	if err != nil {
+		return nil, err
+	}
+
+	prices, err := r.priceRepo.FindAllBySKUID(SKUID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.NewGetDetailProductResponse(data, prices)
 
 	return response, nil
 }

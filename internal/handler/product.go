@@ -10,6 +10,7 @@ import (
 	"github.com/danisbagus/mini-pos-app/internal/core/port"
 	"github.com/danisbagus/mini-pos-app/internal/dto"
 	"github.com/danisbagus/mini-pos-app/pkg/errs"
+	"github.com/gorilla/mux"
 )
 
 type ProductHandler struct {
@@ -67,4 +68,17 @@ func (rc ProductHandler) NewProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeResponse(w, http.StatusCreated, data)
+}
+
+func (rc ProductHandler) GetProductDetail(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	SKUID := vars["sku_id"]
+
+	data, err := rc.Service.GetDetail(SKUID)
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, data)
 }

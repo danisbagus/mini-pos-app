@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"database/sql"
 	"fmt"
 	"strings"
 
@@ -69,4 +70,23 @@ func (r ProductRepo) Create(data *domain.ProductPrice, outlets []domain.Outlet) 
 	}
 
 	return nil
+}
+
+func (r ProductRepo) FindOne(SKUID string) (*domain.Product, *errs.AppError) {
+	var data domain.Product
+
+	FindOneSql := "select sku_id, merchant_id, product_name, image, quantity from products where sku_id = ?"
+
+	err := r.db.Get(&data, FindOneSql, SKUID)
+
+	if err != nil {
+		logger.Error("Error while get find one by skuid product " + err.Error())
+		if err == sql.ErrNoRows {
+			return nil, errs.NewNotFoundError("Product not found")
+		} else {
+			return nil, errs.NewUnexpectedError("Unexpected database error")
+		}
+	}
+
+	return &data, nil
 }
