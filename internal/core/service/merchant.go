@@ -17,6 +17,17 @@ func NewMerchantService(repo port.IMerchantRepo) port.IMerchantService {
 	}
 }
 
+func (r MerchantService) GetAll() (*dto.MerchantListResponse, *errs.AppError) {
+	dataList, err := r.repo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.NewGetListMerchantResponse(dataList)
+
+	return response, nil
+}
+
 func (r MerchantService) GetDetailByUserID(userID int64) (*dto.UserMerchantResponse, *errs.AppError) {
 
 	data, err := r.repo.FindOneByUserID(userID)
