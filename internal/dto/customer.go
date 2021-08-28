@@ -20,6 +20,31 @@ type UpdateCustomerRequest struct {
 	Phone        string `json:"phone"`
 }
 
+type CustomerResponse struct {
+	CustomerID   int64  `json:"customer_id"`
+	UserID       int64  `json:"user_id"`
+	CustomerName string `json:"customer_name"`
+	Phone        string `json:"phone"`
+}
+
+type CustomerListResponse struct {
+	Customer []CustomerResponse `json:"data"`
+}
+
+func NewGetListCustomerResponse(data []domain.Customer) *CustomerListResponse {
+	dataList := make([]CustomerResponse, len(data))
+
+	for k, v := range data {
+		dataList[k] = CustomerResponse{
+			CustomerID:   v.CustomerID,
+			CustomerName: v.CustomerName,
+			UserID:       v.UserID,
+			Phone:        v.Phone,
+		}
+	}
+	return &CustomerListResponse{Customer: dataList}
+}
+
 func NewGetDetailUserCustomerResponse(data *domain.UserCustomer) *UserCustomerResponse {
 	result := &UserCustomerResponse{
 		UserID:       data.UserID,

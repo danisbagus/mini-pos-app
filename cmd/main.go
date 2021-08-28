@@ -77,6 +77,7 @@ func main() {
 
 	apiRouter.HandleFunc("/customer/me", customerHandler.GetCustomerDetailMe).Methods(http.MethodGet)
 	apiRouter.HandleFunc("/customer/me", customerHandler.UpdateCustomerMe).Methods(http.MethodPatch)
+	apiRouter.HandleFunc("/customer/admin", customerHandler.GetCustomerList).Methods(http.MethodGet)
 
 	apiRouter.HandleFunc("/product", productHandler.NewProduct).Methods(http.MethodPost)
 	apiRouter.HandleFunc("/product/me", productHandler.GetProductListMe).Methods(http.MethodGet)

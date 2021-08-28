@@ -20,6 +20,20 @@ func NewCustomerRepo(db *sqlx.DB) port.ICustomerRepo {
 	}
 }
 
+func (r CustomerRepo) FindAll() ([]domain.Customer, *errs.AppError) {
+	customers := make([]domain.Customer, 0)
+
+	findAllSql := "select * from customers"
+	err := r.db.Select(&customers, findAllSql)
+
+	if err != nil {
+		logger.Error("Error while quering find all customers " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	return customers, nil
+}
+
 func (r CustomerRepo) FindOneByUserID(userID int64) (*domain.UserCustomer, *errs.AppError) {
 	var data domain.UserCustomer
 

@@ -17,6 +17,17 @@ func NewCustomerService(repo port.ICustomerRepo) port.ICustomerService {
 	}
 }
 
+func (r CustomerService) GetAll() (*dto.CustomerListResponse, *errs.AppError) {
+	dataList, err := r.repo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.NewGetListCustomerResponse(dataList)
+
+	return response, nil
+}
+
 func (r CustomerService) GetDetailByUserID(userID int64) (*dto.UserCustomerResponse, *errs.AppError) {
 	data, err := r.repo.FindOneByUserID(userID)
 	if err != nil {

@@ -21,17 +21,17 @@ func NewMerchantRepo(db *sqlx.DB) port.IMerchantRepo {
 }
 
 func (r MerchantRepo) FindAll() ([]domain.Merchant, *errs.AppError) {
-	products := make([]domain.Merchant, 0)
+	merchants := make([]domain.Merchant, 0)
 
 	findAllSql := "select * from merchants"
-	err := r.db.Select(&products, findAllSql)
+	err := r.db.Select(&merchants, findAllSql)
 
 	if err != nil {
 		logger.Error("Error while quering find all merchants " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 
-	return products, nil
+	return merchants, nil
 }
 
 func (r MerchantRepo) FindOneByID(merchantID int64) (*domain.UserMerchant, *errs.AppError) {
