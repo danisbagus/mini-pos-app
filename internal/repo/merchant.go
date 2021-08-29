@@ -93,3 +93,21 @@ func (r MerchantRepo) Update(merchatID int64, data *domain.Merchant) *errs.AppEr
 
 	return nil
 }
+
+func (r MerchantRepo) Delete(merchantID int64) *errs.AppError {
+
+	deleteSql := "delete from merchants where merchant_id = ?"
+
+	stmt, err := r.db.Prepare(deleteSql)
+	if err != nil {
+		logger.Error("Error while delete merchant " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	_, err = stmt.Exec(merchantID)
+	if err != nil {
+		logger.Error("Error while delete merchant " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+	return nil
+}

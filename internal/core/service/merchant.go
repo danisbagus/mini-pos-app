@@ -76,3 +76,16 @@ func (r MerchantService) UpdateMerchantByUserID(userID int64, req *dto.UpdateMer
 
 	return nil
 }
+
+func (r MerchantService) RemoveMerchant(merchantID int64) *errs.AppError {
+	// validate merchant
+	if _, err := r.repo.FindOneByID(merchantID); err != nil {
+		return err
+	}
+
+	err := r.repo.Delete(merchantID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

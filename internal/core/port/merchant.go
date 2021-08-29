@@ -11,6 +11,7 @@ type IMerchantRepo interface {
 	FindOneByID(merchantID int64) (*domain.UserMerchant, *errs.AppError)
 	FindOneByUserID(userID int64) (*domain.UserMerchant, *errs.AppError)
 	Update(merchatID int64, data *domain.Merchant) *errs.AppError
+	Delete(merchatID int64) *errs.AppError
 }
 
 type IMerchantService interface {
@@ -18,4 +19,5 @@ type IMerchantService interface {
 	GetOne(merchantID int64) (*dto.MerchantResponse, *errs.AppError)
 	GetDetailByUserID(userID int64) (*dto.UserMerchantResponse, *errs.AppError)
 	UpdateMerchantByUserID(userID int64, data *dto.UpdateMerchanteRequest) *errs.AppError
+	RemoveMerchant(merchantID int64) *errs.AppError
 }

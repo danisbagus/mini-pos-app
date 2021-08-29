@@ -114,3 +114,29 @@ func (rc MerchantHandler) UpdateMerchantMe(w http.ResponseWriter, r *http.Reques
 		"success": true,
 	})
 }
+
+func (rc MerchantHandler) RemoveMerchant(w http.ResponseWriter, r *http.Request) {
+	claimData, appErr := GetClaimData(r)
+	if appErr != nil {
+		writeResponse(w, appErr.Code, appErr.AsMessage())
+		return
+	}
+
+	if claimData.Role != "ADMIN" {
+		err := errs.NewAuthorizationError(fmt.Sprintf("%s role is not authorized", claimData.Role))
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+
+	vars := mux.Vars(r)
+	MerchantID, _ := strconv.Atoi(vars["merchant_id"])
+
+	err := rc.Service.RemoveMerchant(int64(MerchantID))
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, map[string]bool{
+		"success": true,
+	})
+}
