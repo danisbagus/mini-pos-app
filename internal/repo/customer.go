@@ -93,3 +93,21 @@ func (r CustomerRepo) Update(customerID int64, data *domain.Customer) *errs.AppE
 
 	return nil
 }
+
+func (r CustomerRepo) Delete(customerID int64) *errs.AppError {
+
+	deleteSql := "delete from customers where customer_id = ?"
+
+	stmt, err := r.db.Prepare(deleteSql)
+	if err != nil {
+		logger.Error("Error while delete product " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	_, err = stmt.Exec(customerID)
+	if err != nil {
+		logger.Error("Error while delete product " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+	return nil
+}

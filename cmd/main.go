@@ -76,6 +76,7 @@ func main() {
 	apiRouter.HandleFunc("/merchant/admin", merchantHandler.GetMerchantList).Methods(http.MethodGet)
 	apiRouter.HandleFunc("/merchant/{merchant_id}/admin", merchantHandler.GetMerchantDetail).Methods(http.MethodGet)
 	apiRouter.HandleFunc("/merchant/{merchant_id}/admin", merchantHandler.RemoveMerchant).Methods(http.MethodDelete)
+	apiRouter.HandleFunc("/merchant/{merchant_id}/admin", merchantHandler.UpdateMerchant).Methods(http.MethodPatch)
 
 	apiRouter.HandleFunc("/customer/me", customerHandler.GetCustomerDetailMe).Methods(http.MethodGet)
 	apiRouter.HandleFunc("/customer/me", customerHandler.UpdateCustomerMe).Methods(http.MethodPatch)

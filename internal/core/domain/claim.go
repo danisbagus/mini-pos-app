@@ -6,7 +6,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-const ACCESS_TOKEN_DURATION = time.Hour
+const ACCESS_TOKEN_DURATION = 3 * time.Hour // 3 hour
 const HMAC_SAMPLE_SECRET = "miniposapp-secret"
 
 type AccessTokenClaims struct {

@@ -75,3 +75,16 @@ func (r CustomerService) UpdateCustomerByUserID(userID int64, req *dto.UpdateCus
 
 	return nil
 }
+
+func (r CustomerService) RemoveCustomer(customerID int64) *errs.AppError {
+	// validate customer
+	if _, err := r.repo.FindOne(customerID); err != nil {
+		return err
+	}
+
+	err := r.repo.Delete(customerID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

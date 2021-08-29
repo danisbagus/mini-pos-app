@@ -52,6 +52,31 @@ func (r MerchantService) GetDetailByUserID(userID int64) (*dto.UserMerchantRespo
 	return response, nil
 }
 
+func (r MerchantService) UpdateMerchantByID(merchantID int64, req *dto.UpdateMerchanteRequest) *errs.AppError {
+
+	err := req.Validate()
+	if err != nil {
+		return err
+	}
+
+	merchant, err := r.GetOne(merchantID)
+	if err != nil {
+		return err
+	}
+
+	form := domain.Merchant{
+		MerchantName:      req.MerchantName,
+		HearOfficeAddress: req.HearOfficeAddress,
+	}
+
+	err = r.repo.Update(merchant.MerchantID, &form)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (r MerchantService) UpdateMerchantByUserID(userID int64, req *dto.UpdateMerchanteRequest) *errs.AppError {
 
 	err := req.Validate()
