@@ -94,6 +94,7 @@ func main() {
 	apiRouter.HandleFunc("/outlet/{outlet_id}", outletHandler.UpdateOutlet).Methods(http.MethodPatch)
 	apiRouter.HandleFunc("/outlet/{outlet_id}", outletHandler.RemoveOutlet).Methods(http.MethodDelete)
 	apiRouter.HandleFunc("/outlet/me", outletHandler.GetOutletListByUserID).Methods(http.MethodGet)
+	apiRouter.HandleFunc("/outlet/admin", outletHandler.GetOutletList).Methods(http.MethodGet)
 	apiRouter.HandleFunc("/outlet/merchant/{merchant_id}", outletHandler.GetOutletListByMerchantID).Methods(http.MethodGet)
 
 	apiRouter.HandleFunc("/supplier", supplierHandler.GetSuppplierList).Methods(http.MethodGet)

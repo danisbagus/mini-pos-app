@@ -46,6 +46,28 @@ func (rc OutletHandler) NewOutlet(w http.ResponseWriter, r *http.Request) {
 	writeResponse(w, http.StatusCreated, data)
 }
 
+func (rc OutletHandler) GetOutletList(w http.ResponseWriter, r *http.Request) {
+	claimData, err := GetClaimData(r)
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+
+	if claimData.Role != "ADMIN" {
+		err := errs.NewAuthorizationError(fmt.Sprintf("%s role is not authorized", claimData.Role))
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+
+	}
+
+	dataList, err := rc.Service.GetAll()
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, dataList)
+}
+
 func (rc OutletHandler) GetOutletListByMerchantID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	merchantID, _ := strconv.Atoi(vars["merchant_id"])

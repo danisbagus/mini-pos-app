@@ -34,6 +34,20 @@ func (r OutletRepo) FindAllByMerchantID(merchantID int64) ([]domain.Outlet, *err
 	return outlets, nil
 }
 
+func (r OutletRepo) FindAll() ([]domain.Outlet, *errs.AppError) {
+	outlets := make([]domain.Outlet, 0)
+
+	findAllSql := "select outlet_id, merchant_id, outlet_name, address from outlets"
+	err := r.db.Select(&outlets, findAllSql)
+
+	if err != nil {
+		logger.Error("Error while quering find all outlet" + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	return outlets, nil
+}
+
 func (r OutletRepo) FindOneByID(outletID int64) (*domain.Outlet, *errs.AppError) {
 	var data domain.Outlet
 

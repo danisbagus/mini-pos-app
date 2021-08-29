@@ -58,6 +58,17 @@ func (r OutletService) GetAllByMerchantID(merchantID int64) (*dto.OutletListResp
 	return response, nil
 }
 
+func (r OutletService) GetAll() (*dto.OutletListResponse, *errs.AppError) {
+	dataList, err := r.repo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.NewGetListOutletResponse(dataList)
+
+	return response, nil
+}
+
 func (r OutletService) GetAllByUserID(userID int64) (*dto.OutletListResponse, *errs.AppError) {
 
 	merchant, err := r.merchantRepo.FindOneByUserID(userID)
