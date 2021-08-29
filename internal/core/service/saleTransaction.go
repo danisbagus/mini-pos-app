@@ -52,6 +52,11 @@ func (r SaleTransactionService) NewTransaction(req *dto.NewSaleTransactionReques
 		return nil, errs.NewValidationError("Insufficient product quantity")
 	}
 
+	if _, err = r.outletRepo.FindOneByID(req.OutletID); err != nil {
+		return nil, err
+
+	}
+
 	transactionID := fmt.Sprintf("TS%v", String(6))
 
 	// get price
