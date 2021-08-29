@@ -68,7 +68,7 @@ func (r OutletRepo) FindOneByID(outletID int64) (*domain.Outlet, *errs.AppError)
 }
 
 func (r OutletRepo) Create(data *domain.Outlet) (*domain.Outlet, *errs.AppError) {
-	insertSql := "insert into outlets (merchant_id, outlets, address) values (?,?,?)"
+	insertSql := "insert into outlets (merchant_id, outlet_name, address) values (?,?,?)"
 
 	result, err := r.db.Exec(insertSql, data.MerchantID, data.OutletName, data.Address)
 	if err != nil {
@@ -89,7 +89,7 @@ func (r OutletRepo) Create(data *domain.Outlet) (*domain.Outlet, *errs.AppError)
 
 func (r OutletRepo) Update(outletID int64, data *domain.Outlet) *errs.AppError {
 
-	updateSql := "update outlets set outlet_name=?, address=? where outlets=?"
+	updateSql := "update outlets set outlet_name=?, address=? where outlet_id=?"
 
 	stmt, err := r.db.Prepare(updateSql)
 	if err != nil {

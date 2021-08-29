@@ -140,6 +140,8 @@ func (rc OutletHandler) UpdateOutlet(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	outletID, _ := strconv.Atoi(vars["outlet_id"])
 
+	request.UserID = claimData.UserID
+
 	err := rc.Service.UpdateOutlet(int64(outletID), &request)
 	if err != nil {
 		writeResponse(w, err.Code, err.AsMessage())

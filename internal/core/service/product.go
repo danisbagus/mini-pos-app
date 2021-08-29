@@ -170,7 +170,7 @@ func (r ProductService) UpdateProduct(SKUID string, req *dto.UpdateProductReques
 	}
 
 	if product.MerchantID != merchant.MerchantID {
-		return nil, errs.NewBadRequestError("Cannot update product price of another merchant")
+		return nil, errs.NewBadRequestError("Cannot update product of another merchant")
 	}
 
 	filePath := fmt.Sprintf("%v:%v/%v", os.Getenv("APP_HOST"), os.Getenv("APP_PORT"), req.Image)
@@ -204,6 +204,14 @@ func (r ProductService) UpdateProductPrice(SKUID string, req *dto.UpdateProductP
 	err := req.Validate()
 	if err != nil {
 		return err
+	}
+
+	// validate outlet
+	if _, err = r.outletRepo.FindOneByID(req.OutletID); err != nil {
+		if err != nil {
+			return err
+		}
+
 	}
 
 	// get merchant data

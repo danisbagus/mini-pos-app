@@ -39,6 +39,16 @@ func (r PurchaseTransactionService) NewTransaction(req *dto.NewPurchaseTransacti
 		return nil, err
 	}
 
+	product, err := r.productRepo.FindOne(req.SKUID)
+	if err != nil {
+		return nil, err
+	}
+
+	// validate product
+	if product.MerchantID != merchant.MerchantID {
+		return nil, errs.NewBadRequestError("Cannot purchase product of another merchant")
+	}
+
 	_, err = r.productRepo.FindOne(req.SKUID)
 	if err != nil {
 		return nil, err

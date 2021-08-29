@@ -37,7 +37,7 @@ func (r SupplierRepo) FindAll() ([]domain.Supplier, *errs.AppError) {
 func (r SupplierRepo) FindOneByID(SupplierID int64) (*domain.Supplier, *errs.AppError) {
 	var data domain.Supplier
 
-	FindOneSql := "select s.* from from where supplier_id=?"
+	FindOneSql := "select s.* from suppliers s where s.supplier_id=?"
 
 	err := r.db.Get(&data, FindOneSql, SupplierID)
 

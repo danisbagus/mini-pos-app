@@ -75,7 +75,7 @@ func (r AuthRepo) CreateUserMerchant(data *domain.UserMerchant) (*domain.UserMer
 		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 
-	resultCustomer, err := tx.Exec(`insert into customers (user_id, customer_name, phone) 
+	resultCustomer, err := tx.Exec(`insert into merchants (user_id, merchant_name, head_office_address) 
 	values (?, ?, ?)`, userID, data.MerchantName, data.HearOfficeAddress)
 
 	if err != nil {

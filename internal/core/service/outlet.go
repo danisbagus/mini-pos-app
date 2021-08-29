@@ -93,9 +93,18 @@ func (r OutletService) UpdateOutlet(outletID int64, req *dto.NewOutletRequest) *
 		return err
 	}
 
-	_, err = r.repo.FindOneByID(outletID)
+	outlet, err := r.repo.FindOneByID(outletID)
 	if err != nil {
 		return err
+	}
+
+	merchant, err := r.merchantRepo.FindOneByUserID(req.UserID)
+	if err != nil {
+		return err
+	}
+
+	if outlet.MerchantID != merchant.MerchantID {
+		return errs.NewBadRequestError("Cannot update outlet of another merchant")
 	}
 
 	form := domain.Outlet{
@@ -123,7 +132,7 @@ func (r OutletService) RemoveOutlet(outletID int64, userID int64) *errs.AppError
 	}
 
 	if outlet.MerchantID != merchant.MerchantID {
-		return errs.NewBadRequestError("Cannot update product price of another merchant")
+		return errs.NewBadRequestError("Cannot remove outlet of another merchant")
 	}
 
 	err = r.repo.Delete(outletID)
