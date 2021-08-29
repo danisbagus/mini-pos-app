@@ -108,16 +108,16 @@ UNLOCK TABLES;
 LOCK TABLES `merchants` WRITE;
 
 INSERT INTO `merchants` VALUES 
-  (1,1,'Nusantara Sport','Jl. Kaliurang 90, Yogyakarta'),
-  (2,2,'Jawara Fashion','Jl. Palagan 33, Sleman');
+  (1,2,'Nusantara Sport','Jl. Kaliurang 90, Yogyakarta'),
+  (2,3,'Jawara Fashion','Jl. Palagan 33, Sleman');
 
 UNLOCK TABLES;
 
 LOCK TABLES `customers` WRITE;
 
 INSERT INTO `customers` VALUES 
-  (1,3,'Bobon Kuriniawan','085555555555'),
-  (2,4,'Ira Pamungkas','085555555550');
+  (1,4,'Bobon Kuriniawan','085555555555'),
+  (2,5,'Ira Pamungkas','085555555550');
 
 UNLOCK TABLES;
 
