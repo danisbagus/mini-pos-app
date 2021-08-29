@@ -42,6 +42,7 @@ Then run the proggram
 go run cmd/main.go
 ```
 
-Documentation
+## Documentation
+
 -[Database Scheme](https://dbdiagram.io/d/612b12a3825b5b0146e93d14) 
 -[API Documentation](https://www.postman.com/danisbagus/workspace/miniposapp/request/8996756-218551d2-1532-4ad3-a28d-01b19a144870)
