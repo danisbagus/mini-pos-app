@@ -37,7 +37,7 @@ func (r OutletRepo) FindAllByMerchantID(merchantID int64) ([]domain.Outlet, *err
 func (r OutletRepo) FindOneByID(outletID int64) (*domain.Outlet, *errs.AppError) {
 	var data domain.Outlet
 
-	FindOneSql := "outlet_id, merchant_id, outlet_name, address from outlets where outlet_id=?"
+	FindOneSql := "select outlet_id, merchant_id, outlet_name, address from outlets where outlet_id=?"
 
 	err := r.db.Get(&data, FindOneSql, outletID)
 
@@ -54,7 +54,7 @@ func (r OutletRepo) FindOneByID(outletID int64) (*domain.Outlet, *errs.AppError)
 }
 
 func (r OutletRepo) Create(data *domain.Outlet) (*domain.Outlet, *errs.AppError) {
-	insertSql := "insert into outlets (merchant_id, outlet_name, address) values (?,?,?)"
+	insertSql := "insert into outlets (merchant_id, outlets, address) values (?,?,?)"
 
 	result, err := r.db.Exec(insertSql, data.MerchantID, data.OutletName, data.Address)
 	if err != nil {
@@ -71,4 +71,23 @@ func (r OutletRepo) Create(data *domain.Outlet) (*domain.Outlet, *errs.AppError)
 	data.OutletID = id
 
 	return data, nil
+}
+
+func (r OutletRepo) Update(outletID int64, data *domain.Outlet) *errs.AppError {
+
+	updateSql := "update outlets set outlet_name=?, address=? where outlet_id=?"
+
+	stmt, err := r.db.Prepare(updateSql)
+	if err != nil {
+		logger.Error("Error while update outlet " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	_, err = stmt.Exec(data.OutletName, data.Address, outletID)
+	if err != nil {
+		logger.Error("Error while update outlet " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	return nil
 }

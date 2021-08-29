@@ -57,3 +57,28 @@ func (r OutletService) GetAllByMerchantID(merchantID int64) (*dto.OutletListResp
 
 	return response, nil
 }
+
+func (r OutletService) UpdateOutlet(outletID int64, req *dto.NewOutletRequest) *errs.AppError {
+
+	err := req.Validate()
+	if err != nil {
+		return err
+	}
+
+	_, err = r.repo.FindOneByID(outletID)
+	if err != nil {
+		return err
+	}
+
+	form := domain.Outlet{
+		OutletName: req.OutletName,
+		Address:    req.Address,
+	}
+
+	err = r.repo.Update(outletID, &form)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
