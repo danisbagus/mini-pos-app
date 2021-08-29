@@ -14,13 +14,15 @@ type PurchaseTransactionService struct {
 	repo         port.IPurchaseTransactionRepo
 	productRepo  port.IProductRepo
 	merchantRepo port.IMerchantRepo
+	suppierRepo  port.ISupplierRepo
 }
 
-func NewPurchaseTransactionService(repo port.IPurchaseTransactionRepo, productRepo port.IProductRepo, merchantRepo port.IMerchantRepo) port.IPurchaseTransactionService {
+func NewPurchaseTransactionService(repo port.IPurchaseTransactionRepo, productRepo port.IProductRepo, merchantRepo port.IMerchantRepo, suppierRepo port.ISupplierRepo) port.IPurchaseTransactionService {
 	return &PurchaseTransactionService{
 		repo:         repo,
 		productRepo:  productRepo,
 		merchantRepo: merchantRepo,
+		suppierRepo:  suppierRepo,
 	}
 }
 
@@ -45,6 +47,9 @@ func (r PurchaseTransactionService) NewTransaction(req *dto.NewPurchaseTransacti
 	transactionID := fmt.Sprintf("TP%v", String(6))
 
 	// validate supplier ...
+	if _, err := r.suppierRepo.FindOneByID(req.SuppierID); err != nil {
+		return nil, err
+	}
 
 	form := domain.PurchaseTransaction{
 		TransactionID: transactionID,

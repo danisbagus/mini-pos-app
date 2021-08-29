@@ -48,7 +48,7 @@ func main() {
 	customerService := service.NewCustomerService(customerRepo, authRepo)
 	outletService := service.NewOutletService(outletRepo, merchantRepo)
 	productService := service.NewProductService(productRepo, merchantRepo, outletRepo, priceRepo)
-	purchaseTransactionService := service.NewPurchaseTransactionService(purchaseTransactionRepo, productRepo, merchantRepo)
+	purchaseTransactionService := service.NewPurchaseTransactionService(purchaseTransactionRepo, productRepo, merchantRepo, supplierRepo)
 	saleTransactionService := service.NewSaleTransactionService(saleTransactionRepo, productRepo, merchantRepo, customerRepo, priceRepo, outletRepo)
 	supplierService := service.NewSupplierService(supplierRepo)
 
