@@ -64,8 +64,22 @@ type ProductResponse struct {
 	Price       []ProductPrice `json:"prices"`
 }
 
+type ProductOutletResponse struct {
+	OutletID    int64  `json:"outlet_id"`
+	SKUID       string `json:"sku_id"`
+	MerchantID  int64  `json:"merchant_id"`
+	ProductName string `json:"product_name"`
+	Image       string `json:"image"`
+	Quantity    int64  `json:"quantity"`
+	Price       int64  `json:"price"`
+}
+
 type ProductListResponse struct {
 	Products []ProductResponse `json:"data"`
+}
+
+type ProductOutletListResponse struct {
+	Products []ProductOutletResponse `json:"data"`
 }
 
 func NewNewProductResponse(data *domain.ProductPrice) *NewProductResponse {
@@ -106,6 +120,23 @@ func NewGetListProductResponse(data []ProductResponse) *ProductListResponse {
 		}
 	}
 	return &ProductListResponse{Products: dataList}
+}
+
+func NewGetListProductOutletResponse(data []domain.ProductOutlet) *ProductOutletListResponse {
+	dataList := make([]ProductOutletResponse, len(data))
+
+	for k, v := range data {
+		dataList[k] = ProductOutletResponse{
+			OutletID:    v.OutletID,
+			SKUID:       v.SKUID,
+			MerchantID:  v.MerchantID,
+			ProductName: v.ProductName,
+			Image:       v.Image,
+			Quantity:    v.Quantity,
+			Price:       v.Price,
+		}
+	}
+	return &ProductOutletListResponse{Products: dataList}
 }
 
 func NewGetDetailProductResponse(data *domain.Product, prices []domain.Prices) *ProductResponse {

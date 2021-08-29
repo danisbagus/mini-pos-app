@@ -12,3 +12,9 @@ type ProductPrice struct {
 	Product
 	Price int64 `db:"price"`
 }
+
+type ProductOutlet struct {
+	OutletID int64 `db:"outlet_id"`
+	Product
+	Price int64 `db:"price"`
+}

@@ -145,6 +145,19 @@ func (rc ProductHandler) GetProductListMe(w http.ResponseWriter, r *http.Request
 	writeResponse(w, http.StatusOK, dataList)
 }
 
+func (rc ProductHandler) GetProductOutletList(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	outletID, _ := strconv.Atoi(vars["outlet_id"])
+
+	data, err := rc.Service.GetAllByOutletID(int64(outletID))
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, data)
+}
+
 func (rc ProductHandler) GetProductDetail(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)

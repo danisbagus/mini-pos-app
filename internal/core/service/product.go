@@ -133,6 +133,23 @@ func (r ProductService) GetAllByUserID(UserID int64) (*dto.ProductListResponse, 
 	return response, nil
 }
 
+func (r ProductService) GetAllByOutletID(outletID int64) (*dto.ProductOutletListResponse, *errs.AppError) {
+
+	_, err := r.outletRepo.FindOneByID(outletID)
+	if err != nil {
+		return nil, err
+	}
+
+	dataList, err := r.repo.FindAllByOutletID(outletID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.NewGetListProductOutletResponse(dataList)
+
+	return response, nil
+}
+
 func (r ProductService) GetDetail(SKUID string) (*dto.ProductResponse, *errs.AppError) {
 	data, err := r.repo.FindOne(SKUID)
 	if err != nil {

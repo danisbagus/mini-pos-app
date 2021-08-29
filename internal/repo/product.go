@@ -105,6 +105,26 @@ func (r ProductRepo) FindOne(SKUID string) (*domain.Product, *errs.AppError) {
 	return &data, nil
 }
 
+func (r ProductRepo) FindAllByOutletID(outletID int64) ([]domain.ProductOutlet, *errs.AppError) {
+	products := make([]domain.ProductOutlet, 0)
+
+	FindProductOutletSql := `
+	select o.outlet_id, p.*, pr.price 
+	from products p
+    inner join prices pr on pr.sku_id = p.sku_id
+	inner join outlets o on o.outlet_id = pr.outlet_id
+	where o.outlet_id = ?`
+
+	err := r.db.Select(&products, FindProductOutletSql, outletID)
+
+	if err != nil {
+		logger.Error("Error while quering find all product by outlet id " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	return products, nil
+}
+
 func (r ProductRepo) Update(SKUID string, data *domain.Product) *errs.AppError {
 	updateSql := "update products set product_name=?, image=?, quantity=? where sku_id=?"
 
