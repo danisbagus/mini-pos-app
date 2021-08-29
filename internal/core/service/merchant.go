@@ -8,14 +8,18 @@ import (
 )
 
 type MerchantService struct {
-	repo    port.IMerchantRepo
-	autRepo port.IAuthRepo
+	repo        port.IMerchantRepo
+	autRepo     port.IAuthRepo
+	productRepo port.IProductRepo
+	priceRepo   port.IPriceRepo
 }
 
-func NewMerchantService(repo port.IMerchantRepo, autRepo port.IAuthRepo) port.IMerchantService {
+func NewMerchantService(repo port.IMerchantRepo, autRepo port.IAuthRepo, productRepo port.IProductRepo, priceRepo port.IPriceRepo) port.IMerchantService {
 	return &MerchantService{
-		repo:    repo,
-		autRepo: autRepo,
+		repo:        repo,
+		autRepo:     autRepo,
+		productRepo: productRepo,
+		priceRepo:   priceRepo,
 	}
 }
 
@@ -50,6 +54,49 @@ func (r MerchantService) GetDetailByUserID(userID int64) (*dto.UserMerchantRespo
 	}
 
 	response := dto.NewGetDetailUserMerchantResponse(data)
+
+	return response, nil
+}
+
+func (r MerchantService) GetAllMerchantProduct(merchantID int64) (*dto.ProductListResponse, *errs.AppError) {
+
+	dataList, err := r.productRepo.FindAllByMerchantID(merchantID)
+	if err != nil {
+		return nil, err
+	}
+
+	priceMerchant, err := r.priceRepo.FindAllByMerchantID(merchantID)
+	if err != nil {
+		return nil, err
+	}
+
+	newData := make([]dto.ProductResponse, 0)
+
+	for _, v := range dataList {
+
+		prices := make([]dto.ProductPrice, 0)
+		for _, v2 := range priceMerchant {
+			if v.SKUID == v2.SKUID {
+				price := dto.ProductPrice{
+					OutletID: v2.OutletID,
+					Price:    v2.Price,
+				}
+				prices = append(prices, price)
+			}
+		}
+
+		product := dto.ProductResponse{
+			SKUID:       v.SKUID,
+			MerchantID:  v.MerchantID,
+			ProductName: v.ProductName,
+			Quantity:    v.Quantity,
+			Price:       prices,
+		}
+
+		newData = append(newData, product)
+	}
+
+	response := dto.NewGetListProductResponse(newData)
 
 	return response, nil
 }

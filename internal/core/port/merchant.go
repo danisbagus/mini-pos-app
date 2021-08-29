@@ -18,6 +18,7 @@ type IMerchantService interface {
 	GetAll() (*dto.MerchantListResponse, *errs.AppError)
 	GetOne(merchantID int64) (*dto.MerchantResponse, *errs.AppError)
 	GetDetailByUserID(userID int64) (*dto.UserMerchantResponse, *errs.AppError)
+	GetAllMerchantProduct(merchantID int64) (*dto.ProductListResponse, *errs.AppError)
 	UpdateMerchantByID(merchantID int64, data *dto.UpdateMerchanteRequest) *errs.AppError
 	UpdateMerchantByUserID(userID int64, data *dto.UpdateMerchanteRequest) *errs.AppError
 	RemoveMerchant(merchantID int64) *errs.AppError

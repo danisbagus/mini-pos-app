@@ -84,6 +84,18 @@ func (rc MerchantHandler) GetMerchantDetailMe(w http.ResponseWriter, r *http.Req
 	writeResponse(w, http.StatusOK, data)
 }
 
+func (rc MerchantHandler) GetMerchantProductList(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	MerchantID, _ := strconv.Atoi(vars["merchant_id"])
+
+	dataList, err := rc.Service.GetAllMerchantProduct(int64(MerchantID))
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, dataList)
+}
+
 func (rc MerchantHandler) UpdateMerchant(w http.ResponseWriter, r *http.Request) {
 	claimData, appErr := GetClaimData(r)
 	if appErr != nil {

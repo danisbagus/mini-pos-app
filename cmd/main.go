@@ -34,33 +34,28 @@ func main() {
 
 	// wiring
 	authRepo := repo.NewAuthRepo(client)
-	authService := service.NewAuthServie(authRepo)
-	authHandler := handler.AuthHandler{Service: authService}
-
 	merchantRepo := repo.NewMerchantRepo(client)
-	merchantService := service.NewMerchantService(merchantRepo, authRepo)
-	merchantHandler := handler.MerchantHandler{Service: merchantService}
-
 	customerRepo := repo.NewCustomerRepo(client)
-	customerService := service.NewCustomerService(customerRepo, authRepo)
-	customerHandler := handler.CustomerHandler{Service: customerService}
-
 	outletRepo := repo.NewOutletRepo(client)
-	outletService := service.NewOutletService(outletRepo, merchantRepo)
-	outletHandler := handler.OutletHandler{Service: outletService}
-
 	priceRepo := repo.NewPriceRepo(client)
-
 	productRepo := repo.NewProductRepo(client)
-	productService := service.NewProductService(productRepo, merchantRepo, outletRepo, priceRepo)
-	productHandler := handler.ProductHandler{Service: productService}
-
 	purchaseTransactionRepo := repo.NewPurchaseTransactionRepo(client)
-	purchaseTransactionService := service.NewPurchaseTransactionService(purchaseTransactionRepo, productRepo, merchantRepo)
-	purchaseTransactionHandler := handler.PurchaseTransactionHandler{Service: purchaseTransactionService}
-
 	saleTransactionRepo := repo.NewSaleTransactionRepo(client)
+
+	authService := service.NewAuthServie(authRepo)
+	merchantService := service.NewMerchantService(merchantRepo, authRepo, productRepo, priceRepo)
+	customerService := service.NewCustomerService(customerRepo, authRepo)
+	outletService := service.NewOutletService(outletRepo, merchantRepo)
+	productService := service.NewProductService(productRepo, merchantRepo, outletRepo, priceRepo)
+	purchaseTransactionService := service.NewPurchaseTransactionService(purchaseTransactionRepo, productRepo, merchantRepo)
 	saleTransactionService := service.NewSaleTransactionService(saleTransactionRepo, productRepo, merchantRepo, customerRepo, priceRepo, outletRepo)
+
+	authHandler := handler.AuthHandler{Service: authService}
+	merchantHandler := handler.MerchantHandler{Service: merchantService}
+	customerHandler := handler.CustomerHandler{Service: customerService}
+	outletHandler := handler.OutletHandler{Service: outletService}
+	productHandler := handler.ProductHandler{Service: productService}
+	purchaseTransactionHandler := handler.PurchaseTransactionHandler{Service: purchaseTransactionService}
 	saleTransactionHandler := handler.SaleTransactionHandler{Service: saleTransactionService}
 
 	// routing
@@ -77,6 +72,7 @@ func main() {
 	apiRouter.HandleFunc("/merchant/{merchant_id}/admin", merchantHandler.GetMerchantDetail).Methods(http.MethodGet)
 	apiRouter.HandleFunc("/merchant/{merchant_id}/admin", merchantHandler.RemoveMerchant).Methods(http.MethodDelete)
 	apiRouter.HandleFunc("/merchant/{merchant_id}/admin", merchantHandler.UpdateMerchant).Methods(http.MethodPatch)
+	apiRouter.HandleFunc("/merchant/{merchant_id}/product", merchantHandler.GetMerchantProductList).Methods(http.MethodGet)
 
 	apiRouter.HandleFunc("/customer/me", customerHandler.GetCustomerDetailMe).Methods(http.MethodGet)
 	apiRouter.HandleFunc("/customer/me", customerHandler.UpdateCustomerMe).Methods(http.MethodPatch)
