@@ -155,6 +155,24 @@ func (r AuthRepo) CreateUserCustomer(data *domain.UserCustomer) (*domain.UserCus
 	return data, nil
 }
 
+func (r AuthRepo) Delete(userID int64) *errs.AppError {
+
+	deleteSql := "delete from users where user_id = ?"
+
+	stmt, err := r.db.Prepare(deleteSql)
+	if err != nil {
+		logger.Error("Error while delete user " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	_, err = stmt.Exec(userID)
+	if err != nil {
+		logger.Error("Error while delete user " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+	return nil
+}
+
 func jwtTokenFromString(tokenString string) (*jwt.Token, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &domain.AccessTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(domain.HMAC_SAMPLE_SECRET), nil

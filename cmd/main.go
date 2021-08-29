@@ -38,11 +38,11 @@ func main() {
 	authHandler := handler.AuthHandler{Service: authService}
 
 	merchantRepo := repo.NewMerchantRepo(client)
-	merchantService := service.NewMerchantService(merchantRepo)
+	merchantService := service.NewMerchantService(merchantRepo, authRepo)
 	merchantHandler := handler.MerchantHandler{Service: merchantService}
 
 	customerRepo := repo.NewCustomerRepo(client)
-	customerService := service.NewCustomerService(customerRepo)
+	customerService := service.NewCustomerService(customerRepo, authRepo)
 	customerHandler := handler.CustomerHandler{Service: customerService}
 
 	outletRepo := repo.NewOutletRepo(client)

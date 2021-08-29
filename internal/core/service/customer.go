@@ -8,12 +8,14 @@ import (
 )
 
 type CustomerService struct {
-	repo port.ICustomerRepo
+	repo    port.ICustomerRepo
+	autRepo port.IAuthRepo
 }
 
-func NewCustomerService(repo port.ICustomerRepo) port.ICustomerService {
+func NewCustomerService(repo port.ICustomerRepo, autRepo port.IAuthRepo) port.ICustomerService {
 	return &CustomerService{
-		repo: repo,
+		repo:    repo,
+		autRepo: autRepo,
 	}
 }
 
@@ -77,12 +79,13 @@ func (r CustomerService) UpdateCustomerByUserID(userID int64, req *dto.UpdateCus
 }
 
 func (r CustomerService) RemoveCustomer(customerID int64) *errs.AppError {
-	// validate customer
-	if _, err := r.repo.FindOne(customerID); err != nil {
+
+	customer, err := r.GetOne(customerID)
+	if err != nil {
 		return err
 	}
 
-	err := r.repo.Delete(customerID)
+	err = r.autRepo.Delete(customer.UserID)
 	if err != nil {
 		return err
 	}

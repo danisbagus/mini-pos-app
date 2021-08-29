@@ -8,12 +8,14 @@ import (
 )
 
 type MerchantService struct {
-	repo port.IMerchantRepo
+	repo    port.IMerchantRepo
+	autRepo port.IAuthRepo
 }
 
-func NewMerchantService(repo port.IMerchantRepo) port.IMerchantService {
+func NewMerchantService(repo port.IMerchantRepo, autRepo port.IAuthRepo) port.IMerchantService {
 	return &MerchantService{
-		repo: repo,
+		repo:    repo,
+		autRepo: autRepo,
 	}
 }
 
@@ -103,12 +105,12 @@ func (r MerchantService) UpdateMerchantByUserID(userID int64, req *dto.UpdateMer
 }
 
 func (r MerchantService) RemoveMerchant(merchantID int64) *errs.AppError {
-	// validate merchant
-	if _, err := r.repo.FindOneByID(merchantID); err != nil {
+	merchant, err := r.GetOne(merchantID)
+	if err != nil {
 		return err
 	}
 
-	err := r.repo.Delete(merchantID)
+	err = r.autRepo.Delete(merchant.UserID)
 	if err != nil {
 		return err
 	}

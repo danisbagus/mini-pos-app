@@ -11,6 +11,7 @@ type IAuthRepo interface {
 	Verify(token string) *errs.AppError
 	CreateUserMerchant(data *domain.UserMerchant) (*domain.UserMerchant, *errs.AppError)
 	CreateUserCustomer(data *domain.UserCustomer) (*domain.UserCustomer, *errs.AppError)
+	Delete(userID int64) *errs.AppError
 }
 
 type IAuthService interface {
