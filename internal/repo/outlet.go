@@ -75,7 +75,7 @@ func (r OutletRepo) Create(data *domain.Outlet) (*domain.Outlet, *errs.AppError)
 
 func (r OutletRepo) Update(outletID int64, data *domain.Outlet) *errs.AppError {
 
-	updateSql := "update outlets set outlet_name=?, address=? where outlet_id=?"
+	updateSql := "update outlets set outlet_name=?, address=? where outlets=?"
 
 	stmt, err := r.db.Prepare(updateSql)
 	if err != nil {
@@ -89,5 +89,23 @@ func (r OutletRepo) Update(outletID int64, data *domain.Outlet) *errs.AppError {
 		return errs.NewUnexpectedError("Unexpected database error")
 	}
 
+	return nil
+}
+
+func (r OutletRepo) Delete(outletID int64) *errs.AppError {
+
+	deleteSql := "delete from outlets where outlet_id = ?"
+
+	stmt, err := r.db.Prepare(deleteSql)
+	if err != nil {
+		logger.Error("Error while delete outlet " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	_, err = stmt.Exec(outletID)
+	if err != nil {
+		logger.Error("Error while delete outlet " + err.Error())
+		return errs.NewUnexpectedError("Unexpected database error")
+	}
 	return nil
 }

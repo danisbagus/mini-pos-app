@@ -104,3 +104,29 @@ func (rc OutletHandler) UpdateOutlet(w http.ResponseWriter, r *http.Request) {
 		"success": true,
 	})
 }
+
+func (rc OutletHandler) RemoveOutlet(w http.ResponseWriter, r *http.Request) {
+	claimData, appErr := GetClaimData(r)
+	if appErr != nil {
+		writeResponse(w, appErr.Code, appErr.AsMessage())
+		return
+	}
+
+	if claimData.Role != "MERCHANT" {
+		err := errs.NewAuthorizationError(fmt.Sprintf("%s role is not authorized", claimData.Role))
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+
+	vars := mux.Vars(r)
+	outletID, _ := strconv.Atoi(vars["outlet_id"])
+
+	err := rc.Service.RemoveOutlet(int64(outletID), claimData.UserID)
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, map[string]bool{
+		"success": true,
+	})
+}

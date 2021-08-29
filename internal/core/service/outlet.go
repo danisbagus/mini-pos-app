@@ -82,3 +82,25 @@ func (r OutletService) UpdateOutlet(outletID int64, req *dto.NewOutletRequest) *
 
 	return nil
 }
+
+func (r OutletService) RemoveOutlet(outletID int64, userID int64) *errs.AppError {
+	outlet, err := r.repo.FindOneByID(outletID)
+	if err != nil {
+		return err
+	}
+
+	merchant, err := r.merchantRepo.FindOneByUserID(userID)
+	if err != nil {
+		return err
+	}
+
+	if outlet.MerchantID != merchant.MerchantID {
+		return errs.NewBadRequestError("Cannot update product price of another merchant")
+	}
+
+	err = r.repo.Delete(outletID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
