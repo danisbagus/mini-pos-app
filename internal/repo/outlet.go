@@ -52,3 +52,23 @@ func (r OutletRepo) FindOneByID(outletID int64) (*domain.Outlet, *errs.AppError)
 
 	return &data, nil
 }
+
+func (r OutletRepo) Create(data *domain.Outlet) (*domain.Outlet, *errs.AppError) {
+	insertSql := "insert into outlets (merchant_id, outlet_name, address) values (?,?,?)"
+
+	result, err := r.db.Exec(insertSql, data.MerchantID, data.OutletName, data.Address)
+	if err != nil {
+		logger.Error("Error while creating new outlet " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		logger.Error("Error while get last insert id for new outlet" + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	data.OutletID = id
+
+	return data, nil
+}
