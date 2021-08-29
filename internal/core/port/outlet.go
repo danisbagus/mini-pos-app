@@ -17,6 +17,7 @@ type IOutletRepo interface {
 type IOutletService interface {
 	NewOutlet(data *dto.NewOutletRequest) (*dto.NewOutletResponse, *errs.AppError)
 	GetAllByMerchantID(merchantID int64) (*dto.OutletListResponse, *errs.AppError)
+	GetAllByUserID(userID int64) (*dto.OutletListResponse, *errs.AppError)
 	UpdateOutlet(outletID int64, data *dto.NewOutletRequest) *errs.AppError
 	RemoveOutlet(outletID int64, userID int64) *errs.AppError
 }

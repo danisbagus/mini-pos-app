@@ -56,7 +56,7 @@ func (rc OutletHandler) GetOutletListByMerchantID(w http.ResponseWriter, r *http
 		return
 	}
 
-	if claimData.Role != "MERCHANT" {
+	if !(claimData.Role == "MERCHANT" || claimData.Role == "ADMIN") {
 		err := errs.NewAuthorizationError(fmt.Sprintf("%s role is not authorized", claimData.Role))
 		writeResponse(w, err.Code, err.AsMessage())
 		return
@@ -64,6 +64,29 @@ func (rc OutletHandler) GetOutletListByMerchantID(w http.ResponseWriter, r *http
 	}
 
 	dataList, err := rc.Service.GetAllByMerchantID(int64(merchantID))
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+	writeResponse(w, http.StatusOK, dataList)
+}
+
+func (rc OutletHandler) GetOutletListByUserID(w http.ResponseWriter, r *http.Request) {
+
+	claimData, err := GetClaimData(r)
+	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+
+	if claimData.Role != "MERCHANT" {
+		err := errs.NewAuthorizationError(fmt.Sprintf("%s role is not authorized", claimData.Role))
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+
+	}
+
+	dataList, err := rc.Service.GetAllByUserID(claimData.UserID)
 	if err != nil {
 		writeResponse(w, err.Code, err.AsMessage())
 		return
